@@ -1,0 +1,11 @@
+screenshots/air/
+screenshots/tnb/
+screenshots/unifi/
+PyWhatKit_DB.txt
+.env
+venv
+chromedriver/chromedriver_linux64.zip
+chromedriver/chromedriver_linux64_114-0-5735-16
+chromedriver/LICENSE.chromedriver
+chromedriver/selenium-server-standalone.jar
+chromedriver/ork
