@@ -1,0 +1,6 @@
+selenium
+python-dotenv
+pywhatkit
+pymongo
+webdriver_manager
+pyautogui
