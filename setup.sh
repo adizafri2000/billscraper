@@ -10,7 +10,7 @@ sudo apt -y install google-chrome-stable
 echo "(2/9) Installing chromedriver v114.0.5735.16 ..."
 wget https://chromedriver.storage.googleapis.com/114.0.5735.16/chromedriver_linux64.zip
 unzip chromedriver_linux64.zip
-#sudo mv chromedriver /usr/bin/chromedriver 
+mv chromedriver chromedriver/chromedriver_linux64_114-0-5735-16
 sudo chown root:root chromedriver 
 sudo chmod +x chromedriver 
 
@@ -19,7 +19,7 @@ sudo apt install default-jdk
 
 echo "(4/9) Downloading Selenium Server v3.141.59 ..."
 wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar 
-mv selenium-server-standalone-3.141.59.jar selenium-server-standalone.jar 
+mv selenium-server-standalone-3.141.59.jar chromedriver/selenium-server-standalone.jar
 
 echo "(5/9) Allow xhost (or something like that) and creating .Xauthority file ..."
 xhost +
@@ -32,7 +32,7 @@ echo "(7/9) Installing virtualenv for python and initialising a venv ..."
 pip3 install virtualenv
 virtualenv venv
 
-echo "(8/9) Activating venv and installing requirements.txt ..."
+echo "(8/9) Activating venv and installing from requirements.txt ..."
 . venv/bin/activate
 pip install -r requirements.txt
 

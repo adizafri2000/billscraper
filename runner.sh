@@ -1,5 +1,7 @@
 #!/usr/bin/sh
 
+#xvfb-run java -Dwebdriver.chrome.driver=chromedriver/chromedriver_linux64_114-0-5735-16 -jar chromedriver/selenium-server-standalone.jar
+
 echo "(1/5) Activating venv"
 . venv/bin/activate
 
