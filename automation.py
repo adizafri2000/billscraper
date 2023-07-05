@@ -1,12 +1,14 @@
 import os
+from datetime import datetime
 
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from datetime import datetime
+from selenium.webdriver.support.ui import WebDriverWait
+
 import utilities
+from main_logging import logger
 
 load_dotenv()
 TNB_URL = "https://www.mytnb.com.my/"
@@ -28,10 +30,8 @@ def generate_scshot_name(bill_type):
 #  in case of failed automation
 def automate_tnb(driver: webdriver.Chrome) -> {}:
     driver.get(TNB_URL)
-    #driver.fullscreen_window()
-    print(f"Current browser URL: {driver.current_url}")
-    #driver.set_window_size(1920,1080)
-    print(driver.get_window_size())
+    logger.info(f"Current browser URL: {driver.current_url}")
+    logger.info(driver.get_window_size())
 
     tnb_email_input = driver.find_element(By.NAME, "email")
     tnb_password_input = driver.find_element(By.NAME, "password")
@@ -41,13 +41,9 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
     tnb_email = os.getenv("TNB_EMAIL")
     tnb_password = os.getenv("TNB_PASSWORD")
 
-    #driver.maximize_window()
-    #driver.set_window_size(1920, 1080)
-    #driver.fullscreen_window()
     tnb_email_input.send_keys(tnb_email)
     tnb_password_input.send_keys(tnb_password)
     tnb_login_button.click()
-    #driver.maximize_window()
 
     time = 0
     while driver.current_url != TNB_DASHBOARD_URL or time < 15:
@@ -55,7 +51,6 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         driver.implicitly_wait(3)
         time += 3
 
-    #driver.maximize_window()
 
     xpath = {
         "bill_date" : "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[1]/div[2]/div[2]/label",
@@ -79,6 +74,8 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
             (By.XPATH, "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[2]/div[2]/div/span[2]")))
     finally:
         print("Now in finally block")
+        logger.info(f"Current browser URL: {driver.current_url}")
+        logger.info(driver.get_window_size())
         driver.implicitly_wait(7)
         to_pay = driver.find_element(By.XPATH, xpath.get("to_pay")).text
         bill_date = driver.find_element(By.XPATH, xpath.get("bill_date")).text
@@ -111,8 +108,8 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
 
 def automate_air(driver: webdriver.Chrome) -> {}:
     driver.get(AIR_URL)
-    driver.maximize_window()
-    print(f"Current browser URL: {driver.current_url}")
+    logger.info(f"Current browser URL: {driver.current_url}")
+    logger.info(driver.get_window_size())
     driver.save_screenshot(generate_scshot_name("air"))
 
     # close popup
@@ -135,23 +132,20 @@ def automate_air(driver: webdriver.Chrome) -> {}:
     air_email = os.getenv("AIR_EMAIL")
     air_password = os.getenv("AIR_PASSWORD")
 
-    driver.maximize_window()
     air_email_input.send_keys(air_email)
     air_password_input.send_keys(air_password)
     air_login_button.click()
-    driver.maximize_window()
 
     while (driver.current_url != AIR_DASHBOARD_URL):
         # WebDriverWait(driver, 5).until(EC.url_changes(TNB_DASHBOARD_URL))
         driver.implicitly_wait(3)
 
-    driver.fullscreen_window()  # webdriver cannot detect searched elements is using maximize_window()
-
     # Go to billing & payment page at https://crisportal.airselangor.com/profile/billing?lang=en
     driver.find_element(By.XPATH, "//*[@id=\"__layout\"]/div/div[1]/div[1]/div/div/a[4]").click()
 
-    driver.fullscreen_window()
-    print(driver.current_url)
+    logger.info(f"Current browser URL: {driver.current_url}")
+    logger.info(driver.get_window_size())
+
     to_pay = driver.find_element(By.XPATH, "//*[@id=\"printBill\"]/tbody/tr[1]/td[5]").text
     bill_date = driver.find_element(By.XPATH, "//*[@id=\"printBill\"]/tbody/tr[1]/td[3]").text
 

@@ -55,16 +55,8 @@ def sendwhatmsg_instantly(
 
 def send_whatsapp_to_me(msg: str):
     mynum = os.getenv("mynum")
-    '''
-    AsyncPywhatKit.src.sendwhatmsg_instantly(
-        mynum,
-        msg,
-        tab_close=True
-    )
-    '''
     sendwhatmsg_instantly(mynum, msg, tab_close=True)
 
 def send_whatsapp_group(msg: str):
     group_id = os.getenv("ws_group_id")
     pywhatkit.sendwhatmsg_to_group_instantly(group_id,msg,tab_close=True)
-    #sendwhatmsg_instantly(mynum, msg, tab_close=True)

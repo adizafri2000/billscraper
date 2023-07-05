@@ -15,7 +15,7 @@ sent to desired whatsapp recipients.
 4. A working phone number with a Whatsapp account
 
 It is not guaranteed that the automation can run on different platforms, but it isn't guaranteed that it would not
-be able to run either. If you are using and older/later python version or different Linux distro/version but it still
+be able to run either. If you are using an older/later python version or different Linux distro/version but it still
 runs, you're good to go!
 
 ## Limitations

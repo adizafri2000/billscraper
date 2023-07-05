@@ -9,3 +9,4 @@ chromedriver/chromedriver_linux64_114-0-5735-16
 chromedriver/LICENSE.chromedriver
 chromedriver/selenium-server-standalone.jar
 chromedriver/ork
+logs/
