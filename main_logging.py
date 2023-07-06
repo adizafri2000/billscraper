@@ -45,7 +45,7 @@ def setup_logger(logger_name):
 def setup_logger():
     logger = logging
     logger.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         format=log_format,
         #filemode='w',
         handlers=[

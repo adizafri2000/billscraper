@@ -9,6 +9,9 @@ load_dotenv()
 def generate_message(data):
     msg = f"*Bill {datetime.today().strftime('%B')}*\n\nUtilities:\n"
     total_utils = 0.00
+    total_person = 5
+    total_rent = 1000
+    rent_per_person = total_rent/total_person
     for item in data:
         type = item['type']
         to_pay = float(item['to_pay'])
@@ -16,11 +19,11 @@ def generate_message(data):
         msg += tmp_msg
         total_utils += to_pay
 
-    util_per_person = total_utils / 5
-    monthly_total_per_person = util_per_person + 200
+    util_per_person = total_utils / total_person
+    monthly_total_per_person = util_per_person + rent_per_person
 
-    msg += f"Total utilities per person = RM{total_utils:.2f}/5 = *RM{util_per_person:.2f}*\n\n"
-    msg += f"Sewa per person = RM1000/5 = *RM200*\n\n"
+    msg += f"Total utilities per person = RM{total_utils:.2f}/{total_person} = *RM{util_per_person:.2f}*\n\n"
+    msg += f"Sewa per person = RM{total_rent}/{total_person} = *RM{rent_per_person}*\n\n"
     msg += f"Total per person = *RM{monthly_total_per_person:.2f}*"
 
     return msg
