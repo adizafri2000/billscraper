@@ -18,12 +18,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Set up terminal dependencies.
-      run: |
-        ./setup.sh
+      run: ./setup.sh
+      shell: sh
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
         python-version: "3.9"
     - name: Test via runner.sh
-      run: |
-        ./runner.sh
+      run: ./runner.sh
+      shell: sh
