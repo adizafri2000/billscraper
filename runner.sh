@@ -8,6 +8,12 @@ echo "(1/5) Activating venv"
 echo "(2/5) Executing automation script"
 python3 main.py
 
+if $?!=0
+then
+  echo "Program exited with non-zero status code and failed."
+  set -e
+fi
+
 echo "(3/5) Deactivating venv"
 deactivate
 
