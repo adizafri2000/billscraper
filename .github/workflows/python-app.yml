@@ -17,6 +17,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Allow permissions to execute shell scripts
+      run: sudo chmod +x setup.sh runner.sh
+      shell: sh
     - name: Set up terminal dependencies.
       run: ./setup.sh
       shell: sh
