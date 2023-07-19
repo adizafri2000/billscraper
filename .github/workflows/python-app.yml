@@ -17,6 +17,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Make envfile
+      uses: SpicyPizza/create-envfile@v2.0
+      with:
+        envkey_DEBUG: false
+        TNB_EMAIL: ${{ secrets.TNB_EMAIL }}
+        TNB_PASSWORD: ${{ secrets.TNB_PASSWORD }}
+        AIR_EMAIL: ${{ secrets.AIR_EMAIL }}
+        AIR_PASSWORD: ${{ secrets.AIR_PASSWORD }}
+        mynum: ${{ secrets.mynum }}
+        ws_group_id: ${{ secrets.ws_group_id }}
     - name: Allow permissions to execute shell scripts
       run: sudo chmod +x setup.sh runner.sh
       shell: sh
@@ -29,6 +39,9 @@ jobs:
         python-version: "3.9"
     - name: Venv activation
       run: . venv/bin/activate
+      shell: sh
+    - name: Reinstall pip libraries
+      run: pip install -r requirements.txt
       shell: sh
     - name: Run python app (main.py)
       run: python3 main.py
