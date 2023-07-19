@@ -23,6 +23,10 @@ SCREENSHOT_DIR = "screenshots"
 def generate_scshot_name(bill_type):
     bill_type = bill_type.lower()
     folder = "tnb" if bill_type == "tnb" else "air" if bill_type == "air" else "unifi"
+    logger.debug(f"Before reversing. At {os.getcwd()}")
+    while os.path.basename(os.getcwd())!="billscraper":
+        os.chdir("..")
+        logger.debug(f"Moved back one directory. Currently at {os.getcwd()}")
     return SCREENSHOT_DIR + os.sep + folder + os.sep + f"{folder}-" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".png"
 
 
@@ -31,7 +35,6 @@ def generate_scshot_name(bill_type):
 def automate_tnb(driver: webdriver.Chrome) -> {}:
     driver.get(TNB_URL)
     logger.info(f"Current browser URL: {driver.current_url}")
-    logger.info(driver.get_window_size())
 
     tnb_email_input = driver.find_element(By.NAME, "email")
     tnb_password_input = driver.find_element(By.NAME, "password")
@@ -58,46 +61,68 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         "current_charges" : "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[1]/div[4]/div[2]/label",
         "rounding_adj" : "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[1]/div[5]/div[2]/label",
         "to_pay" : "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[2]/div[2]/div/span[2]",
+        "latest_bill" : "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[1]/div[3]/div[2]/label",
+        "outstanding_charges" : "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[1]/div[4]/div[2]/label",
         "popup_later_button_xpath" : "//*[@id=\"modal-button-1\"]/div/button[1]"
     }
 
+    logger.info(f"Current browser URL: {driver.current_url}")
 
     try:
-        print("trying...")
+        logger.info("Attempting to find popup...")
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath.get("popup_later_button_xpath"))))
-        popup_later_button = driver.find_element(By.XPATH, "//*[@id=\"modal-button-1\"]/div/button[1]")
+        popup_later_button = driver.find_element(By.XPATH, xpath.get("popup_later_button_xpath"))
         popup_later_button.click()
-        print("popup found & closed")
+        logger.info("Popup found & closed")
     except:
-        print("Error occured, now in except block")
+        logger.info("Popup not found")
         WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-            (By.XPATH, "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[2]/div[2]/div/span[2]")))
+            (By.XPATH, xpath.get("to_pay"))))
     finally:
-        print("Now in finally block")
-        logger.info(f"Current browser URL: {driver.current_url}")
-        logger.info(driver.get_window_size())
         driver.implicitly_wait(7)
+
         to_pay = driver.find_element(By.XPATH, xpath.get("to_pay")).text
         bill_date = driver.find_element(By.XPATH, xpath.get("bill_date")).text
-        prev_balance = driver.find_element(By.XPATH, xpath.get("prev_balance")).text.split()[1]
-        current_charges = driver.find_element(By.XPATH, xpath.get("current_charges")).text.split()[1]
-        rounding_adj = driver.find_element(By.XPATH, xpath.get("rounding_adj")).text.split()[1]
 
+        # different presented UI and needed steps if bill already paid
+        if to_pay=="0.00":
+            latest_bill = driver.find_element(By.XPATH,xpath.get("latest_bill")).text.split()[1]
+            outstanding_charges = driver.find_element(By.XPATH, xpath.get("outstanding_charges")).text.split()[1]
+            msg = (f"TNB Bill Scraped Data:\n"
+            f"Bill Date: {bill_date}\n"
+            f"Outstanding Charges: RM{outstanding_charges}\n"
+            f"Latest Bill: RM{latest_bill}\n"
+            f"Bill has been paid!")
 
-        print(f"TNB Bill Scraped Data:\n"
-              f"Bill Date: {bill_date}\n"
-              f"Previous Balance: RM{prev_balance}\n"
-              f"Current Charges: RM{current_charges}\n"
-              f"Rounding Adjustment: RM{rounding_adj}\n"
-              f"To pay: RM{to_pay}")
+            # since to_pay is 0.00 since it's already been paid, assign latest_bill to to_pay
+            to_pay=latest_bill
 
+        else:
+            prev_balance = driver.find_element(By.XPATH, xpath.get("prev_balance")).text.split()[1]
+            current_charges = driver.find_element(By.XPATH, xpath.get("current_charges")).text.split()[1]
+            rounding_adj = driver.find_element(By.XPATH, xpath.get("rounding_adj")).text.split()[1]
+            msg = (f"TNB Bill Scraped Data:\n"
+            f"Bill Date: {bill_date}\n"
+            f"Previous Balance: RM{prev_balance}\n"
+            f"Current Charges: RM{current_charges}\n"
+            f"Rounding Adjustment: RM{rounding_adj}\n"
+            f"To pay: RM{to_pay}")
+
+        logger.info(msg)
+
+    img_name = generate_scshot_name("tnb")
+    logger.info(f"Saving image to {img_name}")
+    driver.save_screenshot(img_name)
+
+    # logging out
     '''
-        if float(to_pay) == 0:
-            to_pay = str(float(cur_charge) + float(rounding_adj))
-            print(f"Electric bill already paid, generating total from current charge + rounding adjustment: RM{to_pay}")
+    path_logout_button = "//*[@id=\"logout\"]/p/span"
+    driver.find_element(By.XPATH,path_logout_button).click()
+
+    if driver.current_url=="https://www.mytnb.com.my/":
+        logger.info("Successfully logged out")
     '''
 
-    driver.save_screenshot(generate_scshot_name("tnb"))
     return {
         "type": "Elektrik",
         "to_pay": to_pay,
@@ -109,23 +134,20 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
 def automate_air(driver: webdriver.Chrome) -> {}:
     driver.get(AIR_URL)
     logger.info(f"Current browser URL: {driver.current_url}")
-    logger.info(driver.get_window_size())
-    driver.save_screenshot(generate_scshot_name("air"))
 
     # close popup
     try:
         popup_close_button = driver.find_element(By.XPATH, "//*[@id=\"__layout\"]/div/div[2]/div/div/span/i")
         popup_close_button.click()
-        print("Popup found and closed!")
+        logger.info("Popup found and closed!")
         driver.save_screenshot(generate_scshot_name("air"))
     except:
-        print("No popup found!")
+        logger.info("No popup found!")
         driver.save_screenshot(generate_scshot_name("air"))
         pass
 
     driver.implicitly_wait(5)
     air_email_input = driver.find_element(By.XPATH,"//*[@id=\"__layout\"]/div/div[1]/div[2]/section/div[1]/div[2]/div/section/div/div/div/div/div[1]/div[1]/input")
-    #air_email_input = driver.find_element(By.XPATH,"/html/body/div/div/div/div[1]/div[2]/section/div[1]/div[2]/div/section/div/div/div/div/div[1]/div[1]/input")
     air_password_input = driver.find_element(By.XPATH, "//*[@id=\"__layout\"]/div/div[1]/div[2]/section/div[1]/div[2]/div/section/div/div/div/div/div[1]/div[2]/div/input")
     air_login_button = driver.find_element(By.XPATH, "//*[@id=\"__layout\"]/div/div[1]/div[2]/section/div[1]/div[2]/div/section/div/div/div/div/div[2]/div[2]/button")
 
@@ -144,15 +166,16 @@ def automate_air(driver: webdriver.Chrome) -> {}:
     driver.find_element(By.XPATH, "//*[@id=\"__layout\"]/div/div[1]/div[1]/div/div/a[4]").click()
 
     logger.info(f"Current browser URL: {driver.current_url}")
-    logger.info(driver.get_window_size())
 
     to_pay = driver.find_element(By.XPATH, "//*[@id=\"printBill\"]/tbody/tr[1]/td[5]").text
     bill_date = driver.find_element(By.XPATH, "//*[@id=\"printBill\"]/tbody/tr[1]/td[3]").text
 
-    print(f"Air Selangor Bill Scraped Data:\nBill Date: {bill_date}\nTo pay: RM{to_pay}")
+    logger.info(f"Air Selangor Bill Scraped Data:\nBill Date: {bill_date}\nTo pay: RM{to_pay}")
 
-    driver.save_screenshot(generate_scshot_name("air"))
-    print(driver.current_url)
+    img_name = generate_scshot_name("air")
+    logger.info(f"Saving image to {img_name}")
+    driver.save_screenshot(img_name)
+
     return {
         "type": "Air",
         "to_pay": to_pay,
@@ -160,23 +183,14 @@ def automate_air(driver: webdriver.Chrome) -> {}:
         "retrieved_date": datetime.now().strftime("%Y%m%d-%H%M%S")
     }
 
-# TODO Move this somewhere else e.g. a bill generator method
-#  instead of an automation method
-def automate_internet(driver: webdriver.Chrome, skip_automation=True):
-    if skip_automation:
-        print("Skipping automation for unifi bill scraping")
-        datetoday = datetime.today().strftime("%d-%b-%Y")
-        _, month, year = datetoday.split('-')
-        datetoday = f"10-{month}-{year}"
-        return {
-            "type": "Unifi",
-            "to_pay": "168.55",
-            "bill_date": datetoday,
-            "retrieved_date": datetime.now().strftime("%Y%m%d-%H%M%S")
-        }
-    else:
-        driver.get("https://www.google.com")
-        driver.fullscreen_window()
-        print(driver.current_url)
-        driver.save_screenshot(generate_scshot_name("unifi"))
-
+def generate_internet_bill():
+    logger.info("Using generator method to generate internet bill and skip web scraping")
+    datetoday = datetime.today().strftime("%d-%b-%Y")
+    _, month, year = datetoday.split('-')
+    datetoday = f"10-{month}-{year}"
+    return {
+        "type": "Unifi",
+        "to_pay": "168.55",
+        "bill_date": datetoday,
+        "retrieved_date": datetime.now().strftime("%Y%m%d-%H%M%S")
+    }
