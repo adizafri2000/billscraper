@@ -71,13 +71,13 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
     try:
         logger.info("Attempting to find popup...")
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath.get("popup_later_button_xpath"))))
-        popup_later_button = driver.find_element(By.XPATH, "//*[@id=\"modal-button-1\"]/div/button[1]")
+        popup_later_button = driver.find_element(By.XPATH, xpath.get("popup_later_button_xpath"))
         popup_later_button.click()
         logger.info("Popup found & closed")
     except:
         logger.info("Popup not found")
         WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-            (By.XPATH, "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[2]/div[2]/div/span[2]")))
+            (By.XPATH, xpath.get("to_pay"))))
     finally:
         driver.implicitly_wait(7)
 
@@ -96,6 +96,7 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
 
             # since to_pay is 0.00 since it's already been paid, assign latest_bill to to_pay
             to_pay=latest_bill
+
         else:
             prev_balance = driver.find_element(By.XPATH, xpath.get("prev_balance")).text.split()[1]
             current_charges = driver.find_element(By.XPATH, xpath.get("current_charges")).text.split()[1]

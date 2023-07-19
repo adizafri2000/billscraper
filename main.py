@@ -1,29 +1,24 @@
 import os
 import platform
-import sys
 
-import pymongo
 from dotenv import load_dotenv
-from main_logging import logger
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 import automation
 import credit_card_payments as ccp
-import db
 import whatsapp
+from main_logging import logger
 
 load_dotenv()
 data = []
 
 
-def clean_resources(driver: webdriver.Chrome, mongo_client: pymongo.MongoClient):
+def clean_resources(driver: webdriver.Chrome):
     driver.close()
     driver.quit()
     logger.info("Closed and quit webdriver connection!")
-    mongo_client.close()
-    logger.info("Closed mongoDB connection!")
 
 
 def get_chromedriver():
@@ -73,26 +68,13 @@ def main():
     #data = dump_dummy_data()
     logger.debug(data)
 
-    mongo_client = db.get_DB_connection()
-    collection = mongo_client['test']['bills']
-
-    if len(sys.argv) == 2:
-        checker = sys.argv[1]
-        if checker=="save":
-            print("Persisting data to db")
-            for d in data:
-                result = collection.insert_one(d).acknowledged
-                print(f"Data insert acknowledged?: {result}")
-        else:
-            print(f"Unknown argument {checker}, skipping saving to database")
-
     msg = whatsapp.generate_message(data)
     logger.info(msg)
     #whatsapp.send_whatsapp_to_me(msg)
     #whatsapp.send_whatsapp_group(msg)
 
-    clean_resources(driver, mongo_client)
+    clean_resources(driver)
+    logger.info("Program finished!")
 
 if __name__ == '__main__':
     main()
-    logger.info("Program finished!")
