@@ -27,6 +27,12 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.9"
-    - name: Test via runner.sh
-      run: ./runner.sh
+    - name: Venv activation
+      run: . venv/bin/activate
+      shell: sh
+    - name: Run python app (main.py)
+      run: python3 main.py
+      shell: sh
+    - name: Venv deactivation
+      run: deactivate
       shell: sh
