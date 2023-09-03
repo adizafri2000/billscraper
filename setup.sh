@@ -23,6 +23,7 @@ sudo apt -y install google-chrome-stable
 
 echo "(5/9) Allow xhost (or something like that) and creating .Xauthority file ..."
 sudo apt install x11-xserver-utils
+pgrep -a Xorg
 touch ~/.Xauthority
 sudo chmod 777 /etc/pam.d/su /etc/pam.d/sudo
 echo "BEGIN /etc/pam.d/su"
