@@ -43,6 +43,9 @@ jobs:
     - name: Reinstall pip libraries
       run: pip install -r requirements.txt
       shell: sh
+    - name: Add DISPLAY env variable
+      run: export DISPLAY=:0
+      shell: sh
     - name: Run python app (main.py)
       run: python3 main.py
       shell: sh
