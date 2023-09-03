@@ -22,7 +22,7 @@ wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-stand
 mv selenium-server-standalone-3.141.59.jar chromedriver/selenium-server-standalone.jar
 
 echo "(5/9) Allow xhost (or something like that) and creating .Xauthority file ..."
-sudo apt install xhost
+sudo apt install x11-xserver-utils
 touch ~/.Xauthority
 xhost +
 
