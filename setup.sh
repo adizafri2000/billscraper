@@ -47,7 +47,7 @@ echo "END /etc/pam.d/sudo"
 #X=$(xauth list $DISPLAY)
 #sudo -- bash -c "xauth add $X && $@"
 #sudo xauth add $X
-xhost -f ~/.Xauthority +
+xhost -f ~/.Xauthority +si:localuser:runner
 
 echo "(6/9) Installing Tkinter ..."
 sudo apt-get install python3-tk python3-dev
