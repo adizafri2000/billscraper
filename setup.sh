@@ -24,14 +24,9 @@ sudo apt -y install google-chrome-stable
 echo "(5/9) Allow xhost (or something like that) and creating .Xauthority file ..."
 sudo apt install x11-xserver-utils
 touch ~/.Xauthority
-echo "session optional pam_xauth.so" >> /etc/pam.d/su
-echo "session optional pam_xauth.so" >> /etc/pam.d/sudo
-#echo "/etc/pam.d/su"
-#sudo cat /etc/pam.d/su
-#echo "/etc/pam.d/su END"
-#echo "/etc/pam.d/sudo"
-#sudo cat /etc/pam.d/sudo
-#echo "/etc/pam.d/sudo END"
+sudo chmod 777 /etc/pam.d/su /etc/pam.d/sudo
+echo "session optional pam_xauth.so" | sudo tee -a /etc/pam.d/su
+echo "session optional pam_xauth.so" | sudo tee -a /etc/pam.d/sudo
 #X=$(xauth list $DISPLAY)
 #sudo -- bash -c "xauth add $X && $@"
 #sudo xauth add $X
