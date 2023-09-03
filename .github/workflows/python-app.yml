@@ -56,7 +56,7 @@ jobs:
         shell: sh
 
       - name: xhost run
-        run: xhost +si:localuser:root
+        run: xhost +si:localuser:runner
         shell: sh
 
       - name: Run python app (main.py)
