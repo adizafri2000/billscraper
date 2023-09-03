@@ -22,8 +22,8 @@ wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-stand
 mv selenium-server-standalone-3.141.59.jar chromedriver/selenium-server-standalone.jar
 
 echo "(5/9) Allow xhost (or something like that) and creating .Xauthority file ..."
-xhost +
 touch ~/.Xauthority
+xhost +
 
 echo "(6/9) Installing Tkinter ..."
 sudo apt-get install python3-tk python3-dev
