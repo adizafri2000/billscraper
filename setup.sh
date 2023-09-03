@@ -23,9 +23,9 @@ sudo apt -y install google-chrome-stable
 
 echo "(5/9) Allow xhost (or something like that) and creating .Xauthority file ..."
 sudo apt install x11-xserver-utils
+touch ~/.Xauthority
 X=$(xauth list $DISPLAY)
 sudo -- bash -c "xauth add $X && $@"
-touch ~/.Xauthority
 xhost +
 
 echo "(6/9) Installing Tkinter ..."
