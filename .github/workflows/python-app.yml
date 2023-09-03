@@ -43,7 +43,7 @@ jobs:
         shell: sh
 
       - name: xhost run i have no idea
-        run: xhost +local:$USER
+        run: xhost +si:localuser:runner
         shell: sh
 
       - name: Set up Python 3.9
