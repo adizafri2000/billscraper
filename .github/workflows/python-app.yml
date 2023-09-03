@@ -35,7 +35,7 @@ jobs:
         shell: sh
 
       - name: check display
-        run: echo "$DISPLAY" && echo $(whoami)
+        run: echo "$DISPLAY" && echo $(whoami) && echo $(which xhost) && echo $(whereis xhost)
         shell: sh
 
       - name: Set up terminal dependencies.
