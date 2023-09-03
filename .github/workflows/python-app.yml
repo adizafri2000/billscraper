@@ -48,23 +48,22 @@ jobs:
         run: echo "$DISPLAY"
         shell: sh
 
-  build:
-
-    runs-on: ubuntu-20.04
-
-    steps:
       - name: Venv activation
         run: . venv/Scripts/activate
         shell: sh
+
       - name: Reinstall pip libraries
         run: pip install -r requirements.txt
         shell: sh
+
       - name: Run python app (main.py)
         run: python3 main.py
         shell: sh
+
       - name: check display
         run: echo $DISPLAY
         shell: sh
+
       - name: Venv deactivation
         run: deactivate
         shell: sh
