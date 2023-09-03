@@ -3,6 +3,7 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 from selenium import webdriver
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,6 +18,9 @@ AIR_URL = "https://crisportal.airselangor.com/?lang=en"
 AIR_DASHBOARD_URL = 'https://crisportal.airselangor.com/profile/dashboard?lang=en'
 SCREENSHOT_DIR = "screenshots"
 
+BILL_TNB = "tnb"
+BILL_AIR = "air"
+
 # TODO Add logouts to all the automation logic
 # TODO Clean up the mess(es) (basically everything)
 
@@ -30,16 +34,38 @@ def generate_scshot_name(bill_type):
     return SCREENSHOT_DIR + os.sep + folder + os.sep + f"{folder}-" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".png"
 
 
+def save_screenshot(driver, bill_type):
+    img_name = generate_scshot_name(bill_type)
+    logger.info(f"Saving image to {img_name}")
+    driver.save_screenshot(img_name)
+
 # TODO Add a checkpoint in the logic to return e.g. False to caller
 #  in case of failed automation
 def automate_tnb(driver: webdriver.Chrome) -> {}:
+
+    wait = WebDriverWait(driver, 20)
     driver.get(TNB_URL)
     logger.info(f"Current browser URL: {driver.current_url}")
 
-    tnb_email_input = driver.find_element(By.NAME, "email")
-    tnb_password_input = driver.find_element(By.NAME, "password")
-    tnb_login_button = driver.find_element(By.XPATH,
-                                           "//*[@id=\"frm-login\"]/div[2]/div/div[2]/div/div[5]/div[2]/button")
+    save_screenshot(driver, BILL_TNB)
+
+    try:
+        # tnb_email_input = driver.find_element(By.NAME, "email")
+        # print(f'tnb_email_input displayed: {tnb_email_input.is_displayed()}')
+        merdeka_popup = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div/div[2]/button")
+        print(f'merdeka_popup displayed: {merdeka_popup.is_displayed()}')
+        merdeka_popup.click()
+    except:
+        #merdeka popup
+        # merdeka_popup = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div/div[2]/button")
+        # print(f'merdeka_popup displayed: {merdeka_popup.is_displayed()}')
+        # merdeka_popup.click()
+        pass
+    finally:
+        tnb_email_input = driver.find_element(By.NAME, "email")
+        tnb_password_input = driver.find_element(By.NAME, "password")
+        tnb_login_button = driver.find_element(By.XPATH,
+                                               "//*[@id=\"frm-login\"]/div[2]/div/div[2]/div/div[5]/div[2]/button")
 
     tnb_email = os.getenv("TNB_EMAIL")
     tnb_password = os.getenv("TNB_PASSWORD")
@@ -63,15 +89,16 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         "to_pay" : "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[2]/div[2]/div/span[2]",
         "latest_bill" : "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[1]/div[3]/div[2]/label",
         "outstanding_charges" : "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[1]/div[4]/div[2]/label",
-        "popup_later_button_xpath" : "//*[@id=\"modal-button-1\"]/div/button[1]"
+        "popup_later_button_xpath" : "//*[@id=\"modal-button-2\"]/div/button[1]" #if doesnt work, change to 1
     }
 
     logger.info(f"Current browser URL: {driver.current_url}")
 
     try:
         logger.info("Attempting to find popup...")
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath.get("popup_later_button_xpath"))))
+        wait.until(EC.presence_of_element_located((By.XPATH, xpath.get("popup_later_button_xpath"))))
         popup_later_button = driver.find_element(By.XPATH, xpath.get("popup_later_button_xpath"))
+        print(popup_later_button)
         popup_later_button.click()
         logger.info("Popup found & closed")
     except:
@@ -80,12 +107,15 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
             (By.XPATH, xpath.get("to_pay"))))
     finally:
         driver.implicitly_wait(7)
+        WebDriverWait(driver,20)
+
+        save_screenshot(driver, BILL_TNB)
 
         to_pay = driver.find_element(By.XPATH, xpath.get("to_pay")).text
         bill_date = driver.find_element(By.XPATH, xpath.get("bill_date")).text
 
         # different presented UI and needed steps if bill already paid
-        if to_pay=="0.00":
+        if to_pay == "0.00":
             latest_bill = driver.find_element(By.XPATH,xpath.get("latest_bill")).text.split()[1]
             outstanding_charges = driver.find_element(By.XPATH, xpath.get("outstanding_charges")).text.split()[1]
             msg = (f"TNB Bill Scraped Data:\n"
@@ -100,7 +130,11 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         else:
             prev_balance = driver.find_element(By.XPATH, xpath.get("prev_balance")).text.split()[1]
             current_charges = driver.find_element(By.XPATH, xpath.get("current_charges")).text.split()[1]
-            rounding_adj = driver.find_element(By.XPATH, xpath.get("rounding_adj")).text.split()[1]
+            try:
+                rounding_adj = driver.find_element(By.XPATH, xpath.get("rounding_adj")).text.split()[1]
+            except NoSuchElementException:
+                logger.info("No rounding adjustment found (no theft), setting value to 0")
+                rounding_adj = 0.00
             msg = (f"TNB Bill Scraped Data:\n"
             f"Bill Date: {bill_date}\n"
             f"Previous Balance: RM{prev_balance}\n"
