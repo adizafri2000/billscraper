@@ -11,7 +11,10 @@ permissions:
   contents: read
 
 jobs:
-  setup:
+  build:
+    env:
+      DISPLAY: :0
+
     runs-on: ubuntu-20.04
 
     steps:
@@ -31,8 +34,8 @@ jobs:
         run: sudo chmod +x setup.sh runner.sh
         shell: sh
 
-      - name: tester
-        run: echo "this is a test echo line"
+      - name: check display
+        run: echo "$DISPLAY" && echo $DISPLAY && echo "${{env.DISPLAY}}" && echo ${{env.DISPLAY}}
         shell: sh
 
       - name: Set up terminal dependencies.
@@ -43,14 +46,6 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: "3.9"
-
-      - name: Add DISPLAY env variable
-        run: export DISPLAY=:0
-        shell: sh
-
-      - name: check display
-        run: echo "$DISPLAY"
-        shell: sh
 
       - name: Venv activation
         run: . venv/bin/activate
