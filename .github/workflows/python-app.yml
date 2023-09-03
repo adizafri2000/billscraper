@@ -34,12 +34,12 @@ jobs:
         run: sudo chmod +x setup.sh runner.sh
         shell: sh
 
-      - name: check display
-        run: echo "$DISPLAY" && echo $(whoami) && echo $(which xhost) && echo $(whereis xhost)
-        shell: sh
-
       - name: Set up terminal dependencies.
         run: ./setup.sh
+        shell: sh
+
+      - name: check display
+        run: echo "$DISPLAY" && echo $(whoami) && echo $(which xhost) && echo $(whereis xhost)
         shell: sh
 
       - name: Set up Python 3.9
