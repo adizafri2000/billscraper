@@ -35,7 +35,7 @@ jobs:
         shell: sh
 
       - name: check display
-        run: echo "$DISPLAY" && echo $DISPLAY && echo "${{env.DISPLAY}}" && echo ${{env.DISPLAY}}
+        run: echo "$DISPLAY" && echo $(whoami)
         shell: sh
 
       - name: Set up terminal dependencies.
@@ -56,7 +56,7 @@ jobs:
         shell: sh
 
       - name: xhost run
-        run: xhost +
+        run: xhost +si:localuser:root
         shell: sh
 
       - name: Run python app (main.py)
