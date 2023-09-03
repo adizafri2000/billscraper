@@ -24,15 +24,17 @@ sudo apt -y install google-chrome-stable
 echo "(5/9) Allow xhost (or something like that) and creating .Xauthority file ..."
 sudo apt install x11-xserver-utils
 touch ~/.Xauthority
-echo "/etc/pam.d/su"
-sudo cat /etc/pam.d/su
-echo "/etc/pam.d/su END"
-echo "/etc/pam.d/sudo"
-sudo cat /etc/pam.d/sudo
-echo "/etc/pam.d/sudo END"
-X=$(xauth list $DISPLAY)
-sudo -- bash -c "xauth add $X && $@"
-sudo xauth add $X
+echo "session optional pam_xauth.so" >> /etc/pam.d/su
+echo "session optional pam_xauth.so" >> /etc/pam.d/sudo
+#echo "/etc/pam.d/su"
+#sudo cat /etc/pam.d/su
+#echo "/etc/pam.d/su END"
+#echo "/etc/pam.d/sudo"
+#sudo cat /etc/pam.d/sudo
+#echo "/etc/pam.d/sudo END"
+#X=$(xauth list $DISPLAY)
+#sudo -- bash -c "xauth add $X && $@"
+#sudo xauth add $X
 xhost +
 
 echo "(6/9) Installing Tkinter ..."
