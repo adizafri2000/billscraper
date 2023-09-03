@@ -33,7 +33,7 @@ pip3 install virtualenv
 virtualenv venv
 
 echo "(8/9) Activating venv and installing from requirements.txt ..."
-. venv/Scripts/activate
+. venv/bin/activate
 pip install -r requirements.txt
 
 echo "(9/9) Deactivating venv ..."
