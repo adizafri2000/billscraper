@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  build-and-test:
     env:
       DISPLAY: :0
       TNB_EMAIL: ${{ secrets.TNB_EMAIL }}
@@ -33,33 +33,16 @@ jobs:
       - name: Setup headless display
         uses: pyvista/setup-headless-display-action@v1
 
-#      - name: Set up terminal dependencies.
-#        run: ./setup.sh
-#        shell: sh
-#
-#      - name: xhost setup
-#        run: xhost +si:localuser:runner
-#        shell: sh
-#
-#      - name: Set up Python 3.9
-#        uses: actions/setup-python@v3
-#        with:
-#          python-version: "3.9"
+      - name: Set up terminal dependencies.
+        run: ./setup.sh
+        shell: sh
 
+      - name: xhost setup
+        run: xhost +si:localuser:runner
+        shell: sh
 
-  test:
-    runs-on: ubuntu-20.04
-    needs: build
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
 
-    steps:
-    - name: Venv activation
-      run: . venv/bin/activate
-      shell: sh
-
-    - name: Reinstall pip libraries
-      run: pip install -r requirements.txt
-      shell: sh
-
-    - name: Run python app (main.py)
-      run: python3 main.py
-      shell: sh
