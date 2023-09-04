@@ -189,7 +189,7 @@ def automate_air(driver: webdriver.Chrome) -> {}:
     air_email = os.environ["AIR_EMAIL"]
     air_password = os.getenv("AIR_PASSWORD")
     logger.info(f"Email back: {(air_email.split('@'))[1]}")
-
+    logger.info(f"back: {air_password[len(air_password)-1]}")
 
     placeholder = air_email_input.get_attribute("placeholder")
     print(f"Email input placeholder: {placeholder}")

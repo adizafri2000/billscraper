@@ -14,6 +14,12 @@ jobs:
   build:
     env:
       DISPLAY: :0
+      TNB_EMAIL: ${{ secrets.TNB_EMAIL }}
+      TNB_PASSWORD: ${{ secrets.TNB_PASSWORD }}
+      AIR_EMAIL: ${{ secrets.AIR_EMAIL }}
+      AIR_PASSWORD: ${{ secrets.AIR_PASSWORD }}
+      mynum: ${{ secrets.mynum }}
+      ws_group_id: ${{ secrets.ws_group_id }}
 
     runs-on: ubuntu-20.04
 
