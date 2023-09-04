@@ -58,12 +58,12 @@ jobs:
         run: python3 main.py
         shell: sh
 
-      - name: Check venv directory
-        run: ls -al venv
-
-      - name: Check venv/bin directory
-        run: ls -al venv/bin
-
-      - name: Venv deactivation
-        run: . venv/bin/deactivate
-        shell: sh
+#      - name: Check venv directory
+#        run: ls -al venv
+#
+#      - name: Check venv/bin directory
+#        run: ls -al venv/bin
+#
+#      - name: Venv deactivation
+#        run: . venv/bin/deactivate
+#        shell: sh

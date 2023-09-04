@@ -89,7 +89,8 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         "to_pay" : "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[2]/div[2]/div/span[2]",
         "latest_bill" : "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[1]/div[3]/div[2]/label",
         "outstanding_charges" : "//*[@id=\"mainBody\"]/div[5]/div[1]/div/div/div/div[2]/div[1]/div[4]/div[2]/label",
-        "popup_later_button_xpath" : "//*[@id=\"modal-button-2\"]/div/button[1]" #if doesnt work, change to 1
+        "popup_later_button_xpath" : "//*[@id=\"modal-button-2\"]/div/button[1]", #if doesnt work, change to 1,
+        "last_payment" : "//*[@id=\"mainBody\"]/div[5]/div[2]/div/div/div/div[2]/div/div[2]"
     }
 
     logger.info(f"Current browser URL: {driver.current_url}")
@@ -116,7 +117,7 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
 
         # different presented UI and needed steps if bill already paid
         if to_pay == "0.00":
-            latest_bill = driver.find_element(By.XPATH,xpath.get("latest_bill")).text.split()[1]
+            latest_bill = driver.find_element(By.XPATH,xpath.get("last_payment")).text.split()[1]
             outstanding_charges = driver.find_element(By.XPATH, xpath.get("outstanding_charges")).text.split()[1]
             msg = (f"TNB Bill Scraped Data:\n"
             f"Bill Date: {bill_date}\n"
