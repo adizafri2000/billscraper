@@ -37,10 +37,6 @@ jobs:
         run: ./setup.sh
         shell: sh
 
-      - name: check display
-        run: echo "$DISPLAY" && echo $(whoami) && echo $(which xhost) && echo $(whereis xhost)
-        shell: sh
-
       - name: xhost run i have no idea
         run: xhost +si:localuser:runner
         shell: sh
@@ -62,10 +58,12 @@ jobs:
         run: python3 main.py
         shell: sh
 
-      - name: check display
-        run: echo $DISPLAY
-        shell: sh
+      - name: Check venv directory
+        run: ls -al venv
+
+      - name: Check venv/bin directory
+        run: ls -al venv/bin
 
       - name: Venv deactivation
-        run: . deactivate
+        run: . venv/bin/deactivate
         shell: sh
