@@ -13,7 +13,7 @@ sent to desired whatsapp recipients.
 ## Requirements and supported platforms
 1. Python (developed on v3.9)
 2. Ubuntu 20.04 (developed on Windows machine with Ubuntu WSL)
-3A working phone number with a Whatsapp account
+3. A working phone number with a Whatsapp account
 
 It is not guaranteed that the automation can run on different platforms, but it isn't guaranteed that it would not
 be able to run either. If you are using an older/later python version or different Linux distro/version but it still
