@@ -185,15 +185,8 @@ def automate_air(driver: webdriver.Chrome) -> {}:
     air_password_input = driver.find_element(By.XPATH, "//*[@id=\"__layout\"]/div/div[1]/div[2]/section/div[1]/div[2]/div/section/div/div/div/div/div[1]/div[2]/div/input")
     air_login_button = driver.find_element(By.XPATH, "//*[@id=\"__layout\"]/div/div[1]/div[2]/section/div[1]/div[2]/div/section/div/div/div/div/div[2]/div[2]/button")
 
-    # air_email = os.getenv("AIR_EMAIL")
-    air_email = os.environ["AIR_EMAIL"]
+    air_email = os.getenv("AIR_EMAIL")
     air_password = os.getenv("AIR_PASSWORD")
-    logger.info(f"Email back: {(air_email.split('@'))[1]}")
-    logger.info(f"back: {air_password[len(air_password)-1]}")
-
-    placeholder = air_email_input.get_attribute("placeholder")
-    print(f"Email input placeholder: {placeholder}")
-    logger.info(f"Email input placeholder: {placeholder}")
 
     air_email_input.send_keys(air_email)
     air_password_input.send_keys(air_password)
