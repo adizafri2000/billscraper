@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  build-and-test:
+  dev-build-and-test:
     env:
       DISPLAY: :0
       TNB_EMAIL: ${{ secrets.TNB_EMAIL }}
