@@ -77,7 +77,7 @@ def main():
     driver.implicitly_wait(5)
     logger.info(f"Driver window size: {driver.get_window_size()}")
 
-    data.append(automation.automate_tnb(driver))
+    #data.append(automation.automate_tnb(driver))
     data.append(automation.automate_air(driver))
     data.append(automation.generate_internet_bill())
     data.append(ccp.split_washing_machine())

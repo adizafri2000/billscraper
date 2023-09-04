@@ -26,28 +26,18 @@ sudo apt install x11-xserver-utils
 
 touch ~/.Xauthority
 sudo chmod 777 /etc/pam.d/su /etc/pam.d/sudo
-echo "BEGIN /etc/pam.d/su"
-cat /etc/pam.d/su
-echo "END /etc/pam.d/su"
-echo "BEGIN /etc/pam.d/sudo"
-cat /etc/pam.d/sudo
-echo "END /etc/pam.d/sudo"
 
 echo "session optional pam_xauth.so" >> /etc/pam.d/su
+tail -n 1 /etc/pam.d/su
 echo "session optional pam_xauth.so" >> /etc/pam.d/sudo
+tail -n 1 /etc/pam.d/sudo
 
-echo "BEGIN /etc/pam.d/su"
-cat /etc/pam.d/su
-echo "END /etc/pam.d/su"
-echo "BEGIN /etc/pam.d/sudo"
-cat /etc/pam.d/sudo
-echo "END /etc/pam.d/sudo"
 #echo "session optional pam_xauth.so" | sudo tee -a /etc/pam.d/su
 #echo "session optional pam_xauth.so" | sudo tee -a /etc/pam.d/sudo
 #X=$(xauth list $DISPLAY)
 #sudo -- bash -c "xauth add $X && $@"
 #sudo xauth add $X
-xhost -f ~/.Xauthority +si:localuser:runner
+xhost -f ~/.Xauthority +si:localuser:$USER
 
 echo "(6/9) Installing Tkinter ..."
 sudo apt-get install python3-tk python3-dev
