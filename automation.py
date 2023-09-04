@@ -34,7 +34,7 @@ def generate_scshot_name(bill_type):
     return SCREENSHOT_DIR + os.sep + folder + os.sep + f"{folder}-" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".png"
 
 
-def save_screenshot(driver, bill_type):
+def generate_screenshot(driver, bill_type):
     img_name = generate_scshot_name(bill_type)
     logger.info(f"Saving image to {img_name}")
     driver.save_screenshot(img_name)
@@ -46,8 +46,6 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
     wait = WebDriverWait(driver, 20)
     driver.get(TNB_URL)
     logger.info(f"Current browser URL: {driver.current_url}")
-
-    save_screenshot(driver, BILL_TNB)
 
     try:
         # tnb_email_input = driver.find_element(By.NAME, "email")
@@ -99,7 +97,6 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         logger.info("Attempting to find popup...")
         wait.until(EC.presence_of_element_located((By.XPATH, xpath.get("popup_later_button_xpath"))))
         popup_later_button = driver.find_element(By.XPATH, xpath.get("popup_later_button_xpath"))
-        print(popup_later_button)
         popup_later_button.click()
         logger.info("Popup found & closed")
     except:
@@ -110,7 +107,7 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         driver.implicitly_wait(7)
         WebDriverWait(driver,20)
 
-        save_screenshot(driver, BILL_TNB)
+        generate_screenshot(driver, BILL_TNB)
 
         to_pay = driver.find_element(By.XPATH, xpath.get("to_pay")).text
         bill_date = driver.find_element(By.XPATH, xpath.get("bill_date")).text
@@ -121,7 +118,7 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
             outstanding_charges = driver.find_element(By.XPATH, xpath.get("outstanding_charges")).text.split()[1]
             msg = (f"TNB Bill Scraped Data:\n"
             f"Bill Date: {bill_date}\n"
-            f"Outstanding Charges: RM{outstanding_charges}\n"
+            # f"Outstanding Charges: RM{outstanding_charges}\n"
             f"Latest Bill: RM{latest_bill}\n"
             f"Bill has been paid!")
 
@@ -145,19 +142,6 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
 
         logger.info(msg)
 
-    img_name = generate_scshot_name("tnb")
-    logger.info(f"Saving image to {img_name}")
-    driver.save_screenshot(img_name)
-
-    # logging out
-    '''
-    path_logout_button = "//*[@id=\"logout\"]/p/span"
-    driver.find_element(By.XPATH,path_logout_button).click()
-
-    if driver.current_url=="https://www.mytnb.com.my/":
-        logger.info("Successfully logged out")
-    '''
-
     return {
         "type": "Elektrik",
         "to_pay": to_pay,
@@ -175,10 +159,8 @@ def automate_air(driver: webdriver.Chrome) -> {}:
         popup_close_button = driver.find_element(By.XPATH, "//*[@id=\"__layout\"]/div/div[2]/div/div/span/i")
         popup_close_button.click()
         logger.info("Popup found and closed!")
-        driver.save_screenshot(generate_scshot_name("air"))
     except:
         logger.info("No popup found!")
-        driver.save_screenshot(generate_scshot_name("air"))
         pass
 
     driver.implicitly_wait(5)
@@ -202,14 +184,12 @@ def automate_air(driver: webdriver.Chrome) -> {}:
 
     logger.info(f"Current browser URL: {driver.current_url}")
 
+    generate_screenshot(driver, BILL_AIR)
+
     to_pay = driver.find_element(By.XPATH, "//*[@id=\"printBill\"]/tbody/tr[1]/td[5]").text
     bill_date = driver.find_element(By.XPATH, "//*[@id=\"printBill\"]/tbody/tr[1]/td[3]").text
 
     logger.info(f"Air Selangor Bill Scraped Data:\nBill Date: {bill_date}\nTo pay: RM{to_pay}")
-
-    img_name = generate_scshot_name("air")
-    logger.info(f"Saving image to {img_name}")
-    driver.save_screenshot(img_name)
 
     return {
         "type": "Air",

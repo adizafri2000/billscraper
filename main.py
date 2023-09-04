@@ -12,7 +12,7 @@ import whatsapp
 from main_logging import logger
 
 # to avoid KeyError 'Display' when importing pywhatkit
-os.environ['DISPLAY'] = ':0'
+# os.environ['DISPLAY'] = ':0'
 
 load_dotenv()
 data = []
