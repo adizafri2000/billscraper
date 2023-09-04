@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Bill splitter github actions pipeline
+name: Dev branch build & test pipeline
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
         run: ./setup.sh
         shell: sh
 
-      - name: xhost run i have no idea
+      - name: xhost setup
         run: xhost +si:localuser:runner
         shell: sh
 
@@ -57,13 +57,3 @@ jobs:
       - name: Run python app (main.py)
         run: python3 main.py
         shell: sh
-
-#      - name: Check venv directory
-#        run: ls -al venv
-#
-#      - name: Check venv/bin directory
-#        run: ls -al venv/bin
-#
-#      - name: Venv deactivation
-#        run: . venv/bin/deactivate
-#        shell: sh
