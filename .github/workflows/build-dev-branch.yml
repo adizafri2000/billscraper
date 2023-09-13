@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Dev branch build & test
+name: Dev branch build & broski
 
 on:
   push:
@@ -19,7 +19,14 @@ jobs:
       AIR_EMAIL: ${{ secrets.AIR_EMAIL }}
       AIR_PASSWORD: ${{ secrets.AIR_PASSWORD }}
       mynum: ${{ secrets.mynum }}
-      ws_group_id: ${{ secrets.ws_group_id }}
+      ws_api_url: ${{ secrets.ws_api_url }}
+      ws_api_id: ${{ secrets.ws_api_id }}
+      DB_URI : ${{ secrets.DB_URI }}
+      DB_USERNAME : ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD : ${{ secrets.DB_PASSWORD }}
+      DB_HOST : ${{ secrets.DB_HOST }}
+      DB_PORT : ${{ secrets.DB_PORT }}
+      DB_DATABASE : ${{ secrets.DB_DATABASE }}
 
     runs-on: ubuntu-20.04
 
@@ -45,4 +52,10 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: "3.9"
+
+      - name: Venv activation
+        run: . venv/bin/activate
+
+      - name: Run app
+        run: python3 main.py -m
 

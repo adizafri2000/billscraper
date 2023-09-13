@@ -4,3 +4,7 @@ pywhatkit
 webdriver_manager
 pyautogui
 twilio
+psycopg2
+supabase-py
+supabase
+requests

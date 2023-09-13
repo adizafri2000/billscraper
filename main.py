@@ -1,29 +1,33 @@
+import argparse
 import os
 import platform
 
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 
 import automation
 import credit_card_payments as ccp
+import data_services
 import whatsapp
+from DTO import WhatsappMessageDTO
+from data_services import calculate_new_statement, insert_statement, insert_monthly_utility, insert_monthly_installment
 from main_logging import logger
 
-# to avoid KeyError 'Display' when importing pywhatkit
-# os.environ['DISPLAY'] = ':0'
-
 load_dotenv()
-data = []
+utilities = []
+installments = []
 
 
-def clean_resources(driver: webdriver.Chrome):
+def clean_resources(driver: webdriver.Chrome, conn=None):
     driver.close()
     driver.quit()
     logger.info("Closed and quit webdriver connection!")
+    data_services.close_connection()
+    logger.info("Closed and quit database connection!")
 
 
+@DeprecationWarning
 def get_chromedriver(headless=False):
     """Returns a chromedriver executable based on detected machine OS"""
     driver_dir = "chromedriver" + os.sep
@@ -61,36 +65,100 @@ def get_chromedriver_by_service(headless=False):
     option.add_argument("--window-size=1920x1080")
 
     return webdriver.Chrome(
-        #service=Service(ChromeDriverManager().install()),
+        # service=Service(ChromeDriverManager().install()),
         service=Service(),
         options=option
     )
 
 
-def dump_dummy_data() -> []:
-    return [{'type': 'Elektrik', 'to_pay': '36.85', 'bill_date': '24-Apr-2023', 'retrieved_date': '20230515-005254'},
-            {'type': 'Air', 'to_pay': '6.00', 'bill_date': '28-Apr-2023', 'retrieved_date': '20230515-005300'},
-            {'type': 'Unifi', 'to_pay': '168.55', 'bill_date': '10-May-2023', 'retrieved_date': '20230515-005300'}]
+def parse_arguments():
+    """
+  This function parses the command line arguments and returns a dictionary of the arguments. Generated via Bard
+  """
+
+    # Create the parser
+    parser = argparse.ArgumentParser()
+
+    # Add the arguments
+    parser.add_argument("-m", "--send_message", action="store_true",
+                        help="Whether to send a message to the WhatsApp group.")
+    parser.add_argument("-db", "--database_schema", help="The database schema to use. Defaults to `sqa`.")
+
+    # Parse the arguments
+    args = parser.parse_args()
+
+    # Set the default value for the database_schema argument
+    if not args.database_schema:
+        args.database_schema = "sqa"
+
+    # Return the arguments as a dictionary
+    return vars(args)
+
+
 def main():
+    """
+    Optional command line arguments:
+
+    -m / --send_message
+        - Will send a whatsapp message to the group. Defaults to skipping if not provided. Only need to
+          include the flag, does not need any arguments.
+    -db/ --database_schema
+        - Will use the defined database schema given in the argument. Defaults to 'sqa' if not provided.
+          Possible values: 'sqa', 'billing'
+    """
+
+    # Get the parsed arguments
+    args = parse_arguments()
+
+    # Do something with the arguments
+    if args["send_message"]:
+        print("Execution will send message to WhatsApp group...")
+    else:
+        print("Skipping WhatsApp message...")
+
+    print("Using database schema:", args["database_schema"])
+    data_services.schema = args["database_schema"]
+
+    # chromedriver setup
     driver = get_chromedriver_by_service(headless=True)
-    driver.set_window_size(1920,1080)
+    driver.set_window_size(1920, 1080)
     driver.implicitly_wait(5)
     logger.info(f"Driver window size: {driver.get_window_size()}")
 
-    data.append(automation.automate_tnb(driver))
-    data.append(automation.automate_air(driver))
-    data.append(automation.generate_internet_bill())
-    data.append(ccp.split_washing_machine())
-    #data = dump_dummy_data()
-    logger.debug(data)
+    # execute automation for utilities
+    utilities.append(automation.automate_tnb(driver))
+    utilities.append(automation.automate_air(driver))
+    utilities.append(automation.generate_internet_bill())
+    utilities.append(automation.generate_house_rent_bill())
 
-    msg = whatsapp.generate_message(data)
-    logger.info(msg)
-    whatsapp.send_whatsapp_to_me(msg)
-    #whatsapp.send_whatsapp_group(msg)
+    # retrieve monthly payment data for active installments
+    installments.extend(ccp.calculate_installments())
+
+    data = {
+        "utilities": utilities,
+        "installments": installments
+    }
+
+    # perform calculation for a new billing statement
+    statement = calculate_new_statement(data)
+
+    # persist to database
+    statement_id = insert_statement(statement)
+    insert_monthly_installment(statement_id, installments)
+    insert_monthly_utility(statement_id, utilities)
+    logger.info(f"Statement details: {statement}")
+
+    # generate details for whatsapp message
+    message = WhatsappMessageDTO(statement, utilities, installments)
+    logger.info(f"Normal formatted whatsapp message:\n{message.format_normal_msg()}")
+
+    # send whatsapp message via REST API if argument received
+    if args["send_message"]:
+        print(whatsapp.send_whatsapp_message(message.format_api_msg()))
 
     clean_resources(driver)
     logger.info("Program finished!")
+
 
 if __name__ == '__main__':
     main()

@@ -3,6 +3,7 @@
 Headless (partly) automation script to scrape bills, calculate monthly bill (rent + utilities) and generate a text message which is later
 sent to desired whatsapp recipients.
 
+[![Master branch build & test](https://github.com/adizafri2000/billscraper/actions/workflows/build-master.yml/badge.svg?branch=master&event=pull_request)](https://github.com/adizafri2000/billscraper/actions/workflows/build-master.yml)
 [![Dev branch build & test](https://github.com/adizafri2000/billscraper/actions/workflows/build-dev-branch.yml/badge.svg)](https://github.com/adizafri2000/billscraper/actions/workflows/build-dev-branch.yml)
 
 ## Features
