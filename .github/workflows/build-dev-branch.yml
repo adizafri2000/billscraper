@@ -40,6 +40,11 @@ jobs:
       - name: Setup headless display
         uses: pyvista/setup-headless-display-action@v1
 
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+
       - name: Set up terminal dependencies.
         run: ./setup.sh
         shell: sh
@@ -47,11 +52,6 @@ jobs:
       - name: xhost setup
         run: xhost +si:localuser:runner
         shell: sh
-
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.9"
 
       - name: Venv activation
         run: . venv/bin/activate && python3 -m pip install -r requirements.txt
