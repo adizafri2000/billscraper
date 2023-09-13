@@ -4,7 +4,7 @@ Headless automation script to scrape bills, calculate monthly bills (utilities &
 sent to desired whatsapp recipients.
 
 [![Master branch build & test](https://github.com/adizafri2000/billscraper/actions/workflows/build-master.yml/badge.svg?branch=master&event=pull_request)](https://github.com/adizafri2000/billscraper/actions/workflows/build-master.yml)
-[![Dev branch build & test](https://github.com/adizafri2000/billscraper/actions/workflows/build-dev-branch.yml/badge.svg)](https://github.com/adizafri2000/billscraper/actions/workflows/build-dev-branch.yml)
+[![Dev branch build & test](https://github.com/adizafri2000/billscraper/actions/workflows/build-dev-branch.yml/badge.svg?branch=dev&event=push)](https://github.com/adizafri2000/billscraper/actions/workflows/build-dev-branch.yml)
 
 ## Features
 1. Scrapes bills from [TNB portal](https://www.mytnb.com.my/) and [Air Selangor portal](https://crisportal.airselangor.com/?lang=en).
