@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  master-build-and-test:
+  master-cron-execution:
     env:
       DISPLAY: :0
       TNB_EMAIL: ${{ secrets.TNB_EMAIL }}
