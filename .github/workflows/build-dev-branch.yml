@@ -57,5 +57,5 @@ jobs:
         run: . venv/bin/activate && pip install -r requirements.txt
 
       - name: Run app
-        run: python3 main.py -m
+        run: python3 main.py
 
