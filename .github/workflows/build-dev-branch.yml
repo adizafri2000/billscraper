@@ -62,4 +62,4 @@ jobs:
         shell: sh
 
       - name: Run app
-        run: python3 main.py -m -db billing
+        run: python3 main.py --send_message -db billing
