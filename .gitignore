@@ -10,4 +10,3 @@ chromedriver/LICENSE.chromedriver
 chromedriver/selenium-server-standalone.jar
 chromedriver/ork
 logs/
-db.py

@@ -3,4 +3,5 @@ python-dotenv
 pywhatkit
 webdriver_manager
 pyautogui
-twilio
+psycopg2
+requests

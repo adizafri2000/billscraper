@@ -1,17 +1,17 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Dev branch build & test
+name: Master branch main cron job
 
 on:
-  push:
-    branches: [ "dev" ]
+  schedule:
+    - cron: "0 0 1 * *"
 
 permissions:
   contents: read
 
 jobs:
-  dev-build-and-test:
+  master-cron-execution:
     env:
       DISPLAY: :0
       TNB_EMAIL: ${{ secrets.TNB_EMAIL }}
@@ -21,17 +21,19 @@ jobs:
       mynum: ${{ secrets.mynum }}
       ws_api_url: ${{ secrets.ws_api_url }}
       ws_api_id: ${{ secrets.ws_api_id }}
-      DB_URI : ${{ secrets.DB_URI }}
-      DB_USERNAME : ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD : ${{ secrets.DB_PASSWORD }}
-      DB_HOST : ${{ secrets.DB_HOST }}
-      DB_PORT : ${{ secrets.DB_PORT }}
-      DB_DATABASE : ${{ secrets.DB_DATABASE }}
+      DB_URI: ${{ secrets.DB_URI }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_DATABASE: ${{ secrets.DB_DATABASE }}
 
     runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: master
 
       - name: Allow permissions to execute shell scripts
         run: sudo chmod +x setup.sh runner.sh
@@ -62,4 +64,4 @@ jobs:
         shell: sh
 
       - name: Run app
-        run: python3 main.py -db sqa
+        run: python3 main.py --send_message -db billing

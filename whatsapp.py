@@ -2,33 +2,27 @@ import os
 import pywhatkit
 from datetime import datetime
 from dotenv import load_dotenv
+import requests
 
 load_dotenv()
 
-
-def generate_message(data):
-    msg = f"*Bill {datetime.today().strftime('%B')}*\n\nUtilities:\n"
-    total_utils = 0.00
-    total_person = 5
-    total_rent = 1000
-    rent_per_person = total_rent/total_person
-    for item in data:
-        type = item['type']
-        to_pay = float(item['to_pay'])
-        tmp_msg = f"{type} = RM{to_pay:.2f}\n"
-        msg += tmp_msg
-        total_utils += to_pay
-
-    util_per_person = total_utils / total_person
-    monthly_total_per_person = util_per_person + rent_per_person
-
-    msg += f"Total utilities per person = RM{total_utils:.2f}/{total_person} = *RM{util_per_person:.2f}*\n\n"
-    msg += f"Sewa per person = RM{total_rent}/{total_person} = *RM{rent_per_person}*\n\n"
-    msg += f"Total per person = *RM{monthly_total_per_person:.2f}*"
-
-    return msg
+service_url = os.environ["ws_api_url"]
+ws_api_id = os.environ["ws_api_id"]
 
 
+def send_whatsapp_message(content: str):
+    params = {
+        "number": ws_api_id,
+        "content": content
+    }
+    headers = {
+        "accept": "application/json",
+    }
+    res = requests.post(service_url, params=params)
+    return res
+
+
+@DeprecationWarning
 def sendwhatmsg_instantly(
         phone_no: str,
         message: str,
@@ -55,7 +49,7 @@ def sendwhatmsg_instantly(
     if tab_close:
         core.close_tab(wait_time=close_time)
 
-
+@DeprecationWarning
 def send_whatsapp_to_me(msg: str):
     mynum = os.getenv("mynum")
     sendwhatmsg_instantly(mynum, msg, tab_close=True)
@@ -66,6 +60,7 @@ def send_whatsapp_to_me(msg: str):
     #     caption=msg
     # )
 
+@DeprecationWarning
 def send_whatsapp_group(msg: str):
     group_id = os.getenv("ws_group_id")
     pywhatkit.sendwhatmsg_to_group_instantly(

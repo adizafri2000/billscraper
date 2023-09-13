@@ -43,12 +43,12 @@ echo "(6/9) Installing Tkinter ..."
 sudo apt-get install python3-tk python3-dev
 
 echo "(7/9) Installing virtualenv for python and initialising a venv ..."
-pip3 install virtualenv
+python3 -m pip install virtualenv
 virtualenv venv
 
 echo "(8/9) Activating venv and installing from requirements.txt ..."
 . venv/bin/activate
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 
 echo "(9/9) Deactivating venv ..."
 deactivate

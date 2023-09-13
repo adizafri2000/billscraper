@@ -19,7 +19,7 @@ def generate_log_file_name():
     now = datetime.now()
     log_folder = "logs"
     if not os.path.exists(log_folder):
-        print("Dedicated log directory not found. Creating new directory logs/")
+        print("Dedicated log directory not found. Creating new directory: logs/")
         os.mkdir(log_folder)
     os.chdir(log_folder)
     return now.strftime("%Y%m%d-%H%M%S")+".log"
