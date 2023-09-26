@@ -27,7 +27,7 @@ BILL_AIR = "air"
 # TODO Add logouts to all the automation logic
 # TODO Clean up the mess(es) (basically everything)
 
-def generate_scshot_name(bill_type):
+def generate_scshot_name(bill_type, new=True):
     bill_type = bill_type.lower()
     folder = "tnb" if bill_type == "tnb" else "air" if bill_type == "air" else "unifi"
     logger.debug(f"Before reversing. At {os.getcwd()}")
@@ -36,6 +36,8 @@ def generate_scshot_name(bill_type):
         os.chdir("..")
         logger.debug(f"Moved back one directory. Currently at {os.getcwd()}")
         print(f"Moved back one directory. Currently at {os.getcwd()}")
+    if new:
+        return f"{folder}-" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".png"
     return os.getcwd() + os.sep + SCREENSHOT_DIR + os.sep + folder + os.sep + f"{folder}-" + datetime.now().strftime(
         "%Y%m%d-%H%M%S") + ".png"
 
@@ -44,7 +46,7 @@ def generate_screenshot(driver, bill_type):
     img_name = generate_scshot_name(bill_type)
 
     #for debug
-    img_name = "test.png"
+    # img_name = "test.png"
 
     logger.info(f"Saving image to {img_name}")
     res = driver.get_screenshot_as_file(img_name)
