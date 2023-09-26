@@ -5,3 +5,4 @@ webdriver_manager
 pyautogui
 psycopg2
 requests
+supabase

@@ -126,7 +126,7 @@ def main():
     logger.info(f"Driver window size: {driver.get_window_size()}")
 
     # execute automation for utilities
-    # utilities.append(automation.automate_tnb(driver))
+    utilities.append(automation.automate_tnb(driver))
     utilities.append(automation.automate_air(driver))
     utilities.append(automation.generate_internet_bill())
     utilities.append(automation.generate_house_rent_bill())
