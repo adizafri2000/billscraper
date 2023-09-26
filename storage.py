@@ -19,7 +19,6 @@ def list_bucket_items():
         print(x)
 
 
-# TODO adjust to support saving files when executed in github actions
 def upload_to_bucket(folder, file):
     """
     Uploads an image file to bill-scraper bucket at Supabase. For use of generated screenshots during automation process

@@ -1,4 +1,5 @@
 import os
+import time
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -28,6 +29,12 @@ BILL_AIR = "air"
 # TODO Clean up the mess(es) (basically everything)
 
 def generate_scshot_name(bill_type, new=True):
+    """
+    Generates screenshot name for the screenshot image file with .png extension
+    :param bill_type: "tnb" or "air", depending on bill type
+    :param new: True for GitHub Actions support i.e saving only filename + extension w/o relative/absolute paths, False for else
+    :return: generated file name e.g air-20230706-003906.png. If new is set to False, includes absolute path
+    """
     bill_type = bill_type.lower()
     folder = "tnb" if bill_type == "tnb" else "air" if bill_type == "air" else "unifi"
     logger.debug(f"Before reversing. At {os.getcwd()}")
@@ -44,11 +51,8 @@ def generate_scshot_name(bill_type, new=True):
 
 def generate_screenshot(driver, bill_type):
     img_name = generate_scshot_name(bill_type)
-
-    #for debug
-    # img_name = "test.png"
-
-    logger.info(f"Saving image to {img_name}")
+    logger.info(f"Will save image to {img_name}")
+    time.sleep(3)
     res = driver.get_screenshot_as_file(img_name)
     print(f"Is screenshot saved: {res}")
     storage.upload_to_bucket(folder=bill_type, file=img_name)
@@ -62,9 +66,8 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
     logger.info(f"Current browser URL: {driver.current_url}")
 
     # take screenshot when arrived at login page
+    logger.info("Generating screenshot at login page arrival")
     generate_screenshot(driver, BILL_TNB)
-    # if True:
-    #     return
 
     try:
         # tnb_email_input = driver.find_element(By.NAME, "email")
@@ -80,6 +83,7 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         print("merdeka popup not found...")
     finally:
         # take screenshot before inputting to login fields
+        logger.info("Generating screenshot before inputting to login inputs at login page")
         generate_screenshot(driver, BILL_TNB)
 
     try:
@@ -101,12 +105,11 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
                 except NoSuchElementException:
                     print('all efforts failed. try again tomorrow')
 
-    tnb_login_button = driver.find_element(By.XPATH,
-                                           "//*[@id=\"frm-login\"]/div[2]/div/div[2]/div/div[5]/div[2]/button")
-    print(f"Login button found?: {tnb_login_button.is_displayed()}")
-    tnb_login_button.click()
+
 
     tnb_password_input = driver.find_element(By.NAME, "password")
+    tnb_login_button = driver.find_element(By.XPATH,
+                                           "//*[@id=\"frm-login\"]/div[2]/div/div[2]/div/div[5]/div[2]/button")
 
 
     tnb_email = os.getenv("TNB_EMAIL")
@@ -136,6 +139,7 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
 
     logger.info(f"Current browser URL: {driver.current_url}")
     # take screenshot when arrived at dashboard
+    logger.info("Generating screenshot at dashboard page")
     generate_screenshot(driver, BILL_TNB)
 
     try:
@@ -153,6 +157,7 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         WebDriverWait(driver, 20)
 
         # take screenshot when dashboard is ready to be scraped
+        logger.info("Generating screenshot at before scraping data")
         generate_screenshot(driver, BILL_TNB)
 
         to_pay = driver.find_element(By.XPATH, xpath.get("to_pay")).text
@@ -202,6 +207,7 @@ def automate_air(driver: webdriver.Chrome) -> {}:
     logger.info(f"Current browser URL: {driver.current_url}")
 
     # take screenshot when arrived at home page
+    logger.info("Generating screenshot at login page arrival")
     generate_screenshot(driver, BILL_AIR)
 
     # close popup
@@ -214,6 +220,7 @@ def automate_air(driver: webdriver.Chrome) -> {}:
         pass
 
     # take screenshot after popups and before inputting to login fields
+    logger.info("Generating screenshot before inputting login fields at login page")
     generate_screenshot(driver, BILL_AIR)
 
     driver.implicitly_wait(5)
@@ -236,6 +243,7 @@ def automate_air(driver: webdriver.Chrome) -> {}:
         driver.implicitly_wait(3)
 
     # take screenshot when arrived at dashboard
+    logger.info("Generating screenshot at dashboard page arrival")
     generate_screenshot(driver, BILL_AIR)
 
     # Go to billing & payment page at https://crisportal.airselangor.com/profile/billing?lang=en
@@ -244,6 +252,7 @@ def automate_air(driver: webdriver.Chrome) -> {}:
     logger.info(f"Current browser URL: {driver.current_url}")
 
     # take screenshot when arrived at billing & payment page
+    logger.info("Generating screenshot at billing & payment page arrival & before scraping")
     generate_screenshot(driver, BILL_AIR)
 
     to_pay = driver.find_element(By.XPATH, "//*[@id=\"printBill\"]/tbody/tr[1]/td[5]").text

@@ -63,6 +63,7 @@ def get_chromedriver_by_service(headless=False):
     option.add_argument('--disable-gpu')
     option.add_argument('--no-sandbox')
     option.add_argument("--window-size=1920x1080")
+    # add user agent option to bypass cloudflare
     option.add_argument(
         'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36')
 
