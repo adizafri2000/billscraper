@@ -31,9 +31,11 @@ def generate_scshot_name(bill_type):
     bill_type = bill_type.lower()
     folder = "tnb" if bill_type == "tnb" else "air" if bill_type == "air" else "unifi"
     logger.debug(f"Before reversing. At {os.getcwd()}")
+    print(f"Before reversing. At {os.getcwd()}")
     while os.path.basename(os.getcwd()) != "billscraper":
         os.chdir("..")
         logger.debug(f"Moved back one directory. Currently at {os.getcwd()}")
+        print(f"Moved back one directory. Currently at {os.getcwd()}")
     return SCREENSHOT_DIR + os.sep + folder + os.sep + f"{folder}-" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".png"
 
 
@@ -42,7 +44,7 @@ def generate_screenshot(driver, bill_type):
     logger.info(f"Saving image to {img_name}")
     res = driver.save_screenshot(img_name)
     print(f"Is screenshot saved: {res}")
-    storage.upload_to_bucket(folder=bill_type,file=img_name)
+    storage.upload_to_bucket(folder=bill_type, file=img_name)
 
 
 # TODO Add a checkpoint in the logic to return e.g. False to caller
