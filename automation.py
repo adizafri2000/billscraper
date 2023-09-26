@@ -74,8 +74,19 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         # take screenshot before inputting to login fields
         generate_screenshot(driver, BILL_TNB)
 
-        # tnb_email_input = driver.find_element(By.NAME, "email")
-        tnb_email_input = driver.find_element(By.XPATH, "//*[@id=\"frm-login\"]/div[2]/div/div[2]/div/div[3]/input")
+    try:
+        tnb_email_input = driver.find_element(By.NAME, "email")
+    except NoSuchElementException:
+        print("tnb_email_input not found by name. attempting relative xpath")
+        try:
+            tnb_email_input = driver.find_element(By.XPATH, "//*[@id=\"frm-login\"]/div[2]/div/div[2]/div/div[3]/input")
+        except NoSuchElementException:
+            print('tnb_email_input not found by relative xpath. attempting full xpath')
+            try:
+                tnb_email_input = driver.find_element(By.XPATH, "/html/body/div[2]/section[1]/div[2]/div/div/div/form/div[2]/div/div[2]/div/div[3]/input")
+            except NoSuchElementException:
+                print('all efforts failed. try again tomorrow')
+
 
         tnb_password_input = driver.find_element(By.NAME, "password")
         tnb_login_button = driver.find_element(By.XPATH,

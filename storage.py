@@ -14,7 +14,9 @@ bucket_name: str = "bill-scraper"
 
 def list_bucket_items():
     res = supabase.storage.from_(bucket_name).list()
-    print(f"Listing items in {bucket_name}: {res}")
+    print(f"Listing items in {bucket_name}:")
+    for x in res:
+        print(x)
 
 
 # TODO adjust to support saving files when executed in github actions
