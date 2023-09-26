@@ -85,7 +85,11 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
             try:
                 tnb_email_input = driver.find_element(By.XPATH, "/html/body/div[2]/section[1]/div[2]/div/div/div/form/div[2]/div/div[2]/div/div[3]/input")
             except NoSuchElementException:
-                print('all efforts failed. try again tomorrow')
+                print('tnb_email_input not found by full xpath. attempting css selector')
+                try:
+                    tnb_email_input = driver.find_element(By.CSS_SELECTOR, "#frm-login > div.container-fluid > div > div.col-sm-12.col-md-offset-7.col-md-5.col-lg-4 > div > div:nth-child(3) > input")
+                except NoSuchElementException:
+                    print('all efforts failed. try again tomorrow')
 
 
         tnb_password_input = driver.find_element(By.NAME, "password")
