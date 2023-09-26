@@ -36,7 +36,8 @@ def generate_scshot_name(bill_type):
         os.chdir("..")
         logger.debug(f"Moved back one directory. Currently at {os.getcwd()}")
         print(f"Moved back one directory. Currently at {os.getcwd()}")
-    return os.getcwd() + os.sep + SCREENSHOT_DIR + os.sep + folder + os.sep + f"{folder}-" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".png"
+    return os.getcwd() + os.sep + SCREENSHOT_DIR + os.sep + folder + os.sep + f"{folder}-" + datetime.now().strftime(
+        "%Y%m%d-%H%M%S") + ".png"
 
 
 def generate_screenshot(driver, bill_type):
@@ -70,7 +71,6 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         # merdeka_popup.click()
         print("merdeka popup not found...")
     finally:
-
         # take screenshot before inputting to login fields
         generate_screenshot(driver, BILL_TNB)
 
@@ -83,18 +83,23 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         except NoSuchElementException:
             print('tnb_email_input not found by relative xpath. attempting full xpath')
             try:
-                tnb_email_input = driver.find_element(By.XPATH, "/html/body/div[2]/section[1]/div[2]/div/div/div/form/div[2]/div/div[2]/div/div[3]/input")
+                tnb_email_input = driver.find_element(By.XPATH,
+                                                      "/html/body/div[2]/section[1]/div[2]/div/div/div/form/div[2]/div/div[2]/div/div[3]/input")
             except NoSuchElementException:
                 print('tnb_email_input not found by full xpath. attempting css selector')
                 try:
-                    tnb_email_input = driver.find_element(By.CSS_SELECTOR, "#frm-login > div.container-fluid > div > div.col-sm-12.col-md-offset-7.col-md-5.col-lg-4 > div > div:nth-child(3) > input")
+                    tnb_email_input = driver.find_element(By.CSS_SELECTOR,
+                                                          "#frm-login > div.container-fluid > div > div.col-sm-12.col-md-offset-7.col-md-5.col-lg-4 > div > div:nth-child(3) > input")
                 except NoSuchElementException:
                     print('all efforts failed. try again tomorrow')
 
+    tnb_login_button = driver.find_element(By.XPATH,
+                                           "//*[@id=\"frm-login\"]/div[2]/div/div[2]/div/div[5]/div[2]/button")
+    print(f"Login button found?: {tnb_login_button.is_displayed()}")
+    tnb_login_button.click()
 
-        tnb_password_input = driver.find_element(By.NAME, "password")
-        tnb_login_button = driver.find_element(By.XPATH,
-                                               "//*[@id=\"frm-login\"]/div[2]/div/div[2]/div/div[5]/div[2]/button")
+    tnb_password_input = driver.find_element(By.NAME, "password")
+
 
     tnb_email = os.getenv("TNB_EMAIL")
     tnb_password = os.getenv("TNB_PASSWORD")
@@ -259,6 +264,7 @@ def generate_internet_bill():
         retrieved_date=datetime.now().strftime("%Y%m%d-%H%M%S"),
         bill_date=datetoday
     )
+
 
 def generate_house_rent_bill():
     logger.info("Using generator method to generate house rental bill")
