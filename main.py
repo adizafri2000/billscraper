@@ -119,6 +119,8 @@ def main():
     print("Using database schema:", args["database_schema"])
     data_services.schema = args["database_schema"]
 
+    print(f"At main.main, cwd: {os.getcwd()}")
+
     # chromedriver setup
     driver = get_chromedriver_by_service(headless=True)
     driver.set_window_size(1920, 1080)
