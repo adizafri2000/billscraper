@@ -26,12 +26,13 @@ def upload_to_bucket(folder, file):
     """
     base_name = os.path.basename(file)
     extension = os.path.splitext(base_name)[1]
-    res = supabase.storage.from_(bucket_name).upload(
-        path=f"{folder}/{base_name}",
-        file=file,
-        file_options={"content-type": f"image/{extension}"}
-    )
-    print(f"Status of file upload: {res}")
+    # res = supabase.storage.from_(bucket_name).upload(
+    #     path=f"{folder}/{base_name}",
+    #     file=file,
+    #     file_options={"content-type": f"image/{extension}"}
+    # )
+    # print(f"Status of file upload: {res}")
+    print("Skipping saving screenshot to supabase")
 
 # upload_to_bucket("screenshots/air/air-20230703-225055.png")
 # # upload_to_bucket("QR_CODE.jpeg")
