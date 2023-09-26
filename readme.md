@@ -3,7 +3,9 @@
 Headless automation script to scrape bills, calculate monthly bills (utilities & installments) and generate a text message which is later
 sent to desired whatsapp recipients.
 
-[![Master branch build & test](https://github.com/adizafri2000/billscraper/actions/workflows/build-master.yml/badge.svg?branch=master&event=pull_request)](https://github.com/adizafri2000/billscraper/actions/workflows/build-master.yml)
+[![Master branch main cron job](https://github.com/adizafri2000/billscraper/actions/workflows/cron-master-main.yml/badge.svg)](https://github.com/adizafri2000/billscraper/actions/workflows/cron-master-main.yml)
+[![Master branch cron job tests](https://github.com/adizafri2000/billscraper/actions/workflows/cron-master-test.yml/badge.svg)](https://github.com/adizafri2000/billscraper/actions/workflows/cron-master-test.yml)
+[![Master branch build & test](https://github.com/adizafri2000/billscraper/actions/workflows/build-master.yml/badge.svg)](https://github.com/adizafri2000/billscraper/actions/workflows/build-master.yml)
 [![Dev branch build & test](https://github.com/adizafri2000/billscraper/actions/workflows/build-dev-branch.yml/badge.svg?branch=dev&event=push)](https://github.com/adizafri2000/billscraper/actions/workflows/build-dev-branch.yml)
 
 ## Features
