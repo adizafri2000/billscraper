@@ -27,7 +27,7 @@ def upload_to_bucket(folder, file):
     :param file: Screenshot image file to be uploaded with relative directories
     """
     base_name = os.path.basename(file)
-    extension = os.path.splitext(base_name)[1]
+    extension = os.path.splitext(base_name)[1][1:]
     res = supabase.storage.from_(bucket_name).upload(
         path=f"{folder}/{base_name}",
         file=file,

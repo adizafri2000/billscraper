@@ -63,6 +63,8 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
 
     # take screenshot when arrived at login page
     generate_screenshot(driver, BILL_TNB)
+    if True:
+        return
 
     try:
         # tnb_email_input = driver.find_element(By.NAME, "email")
