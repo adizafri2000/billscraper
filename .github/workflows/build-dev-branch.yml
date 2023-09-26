@@ -65,7 +65,7 @@ jobs:
         shell: sh
 
       - name: Make screenshots directories
-        run: sudo mkdir screenshots && sudo mkdir screenshots/air && sudo mkdir screenshots/tnb
+        run: sudo apt install tree && sudo mkdir screenshots && sudo mkdir screenshots/air && sudo mkdir screenshots/tnb && tree
 
       - name: Run app
         run: python3 main.py -db sqa
