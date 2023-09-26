@@ -40,7 +40,8 @@ def generate_scshot_name(bill_type):
 def generate_screenshot(driver, bill_type):
     img_name = generate_scshot_name(bill_type)
     logger.info(f"Saving image to {img_name}")
-    driver.save_screenshot(img_name)
+    res = driver.save_screenshot(img_name)
+    print(f"Is screenshot saved: {res}")
     storage.upload_to_bucket(folder=bill_type,file=img_name)
 
 

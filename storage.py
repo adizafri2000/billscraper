@@ -18,9 +18,10 @@ def list_bucket_items():
 
 
 # TODO adjust to support saving files when executed in github actions
-def upload_to_bucket(folder,file):
+def upload_to_bucket(folder, file):
     """
     Uploads an image file to bill-scraper bucket at Supabase. For use of generated screenshots during automation process
+    :param folder: tnb or air
     :param file: Screenshot image file to be uploaded with relative directories
     """
     base_name = os.path.basename(file)
@@ -31,7 +32,6 @@ def upload_to_bucket(folder,file):
         file_options={"content-type": f"image/{extension}"}
     )
     print(f"Status of file upload: {res}")
-
 
 # upload_to_bucket("screenshots/air/air-20230703-225055.png")
 # # upload_to_bucket("QR_CODE.jpeg")
