@@ -71,8 +71,5 @@ jobs:
         run: pip install -r requirements.txt
         shell: sh
 
-      - name: Make screenshots directories
-        run: sudo apt install tree && sudo mkdir screenshots && sudo mkdir screenshots/air && sudo mkdir screenshots/tnb && pwd && tree
-
       - name: Run app
         run: python3 main.py -db sqa

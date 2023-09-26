@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: dev
+          ref: master
 
       - name: Allow permissions to execute shell scripts
         run: sudo chmod +x setup.sh runner.sh
