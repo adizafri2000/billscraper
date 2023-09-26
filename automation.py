@@ -60,7 +60,7 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         # merdeka_popup = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div/div[2]/button")
         # print(f'merdeka_popup displayed: {merdeka_popup.is_displayed()}')
         # merdeka_popup.click()
-        pass
+        print("merdeka popup not found...")
     finally:
         tnb_email_input = driver.find_element(By.NAME, "email")
         tnb_password_input = driver.find_element(By.NAME, "password")
