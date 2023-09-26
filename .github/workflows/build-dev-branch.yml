@@ -65,7 +65,7 @@ jobs:
         shell: sh
 
       - name: Make screenshots directories
-        run: mkdir screenshots/air && mkdir screenshots/tnb
+        run: sudo mkdir screenshots && sudo mkdir screenshots/air && sudo mkdir screenshots/tnb
 
       - name: Run app
         run: python3 main.py -db sqa
