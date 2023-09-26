@@ -64,5 +64,8 @@ jobs:
         run: pip install -r requirements.txt
         shell: sh
 
+      - name: Make screenshots directories
+        run: mkdir screenshots/air && mkdir screenshots/tnb
+
       - name: Run app
         run: python3 main.py -db sqa
