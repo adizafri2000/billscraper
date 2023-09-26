@@ -36,7 +36,7 @@ def generate_scshot_name(bill_type):
         os.chdir("..")
         logger.debug(f"Moved back one directory. Currently at {os.getcwd()}")
         print(f"Moved back one directory. Currently at {os.getcwd()}")
-    return SCREENSHOT_DIR + os.sep + folder + os.sep + f"{folder}-" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".png"
+    return os.getcwd() + os.sep + SCREENSHOT_DIR + os.sep + folder + os.sep + f"{folder}-" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".png"
 
 
 def generate_screenshot(driver, bill_type):
