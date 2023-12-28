@@ -5,6 +5,7 @@ import os
 
 
 class Database:
+    """Client class for database connection to PostgreSQL instance"""
     _instance = None
 
     def __new__(cls):

@@ -6,3 +6,4 @@ pyautogui
 psycopg2
 requests
 supabase
+python-dateutil

@@ -38,11 +38,9 @@ def generate_scshot_name(bill_type, new=True):
     bill_type = bill_type.lower()
     folder = "tnb" if bill_type == "tnb" else "air" if bill_type == "air" else "unifi"
     logger.debug(f"Before reversing. At {os.getcwd()}")
-    print(f"Before reversing. At {os.getcwd()}")
     while os.path.basename(os.getcwd()) != "billscraper":
         os.chdir("..")
         logger.debug(f"Moved back one directory. Currently at {os.getcwd()}")
-        print(f"Moved back one directory. Currently at {os.getcwd()}")
     if new:
         return f"{folder}-" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".png"
     return os.getcwd() + os.sep + SCREENSHOT_DIR + os.sep + folder + os.sep + f"{folder}-" + datetime.now().strftime(
@@ -54,7 +52,7 @@ def generate_screenshot(driver, bill_type):
     logger.info(f"Will save image to {img_name}")
     time.sleep(3)
     res = driver.get_screenshot_as_file(img_name)
-    print(f"Is screenshot saved: {res}")
+    logger.info(f"Is screenshot saved: {res}")
     storage.upload_to_bucket(folder=bill_type, file=img_name)
 
 
@@ -73,14 +71,14 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         # tnb_email_input = driver.find_element(By.NAME, "email")
         # print(f'tnb_email_input displayed: {tnb_email_input.is_displayed()}')
         merdeka_popup = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div/div[2]/button")
-        print(f'merdeka_popup displayed: {merdeka_popup.is_displayed()}')
+        logger.info(f'merdeka_popup displayed: {merdeka_popup.is_displayed()}')
         merdeka_popup.click()
     except:
         # merdeka popup
         # merdeka_popup = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div/div[2]/button")
         # print(f'merdeka_popup displayed: {merdeka_popup.is_displayed()}')
         # merdeka_popup.click()
-        print("merdeka popup not found...")
+        logger.info("merdeka popup not found...")
     finally:
         # take screenshot before inputting to login fields
         logger.info("Generating screenshot before inputting to login inputs at login page")
@@ -89,21 +87,21 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
     try:
         tnb_email_input = driver.find_element(By.NAME, "email")
     except NoSuchElementException:
-        print("tnb_email_input not found by name. attempting relative xpath")
+        logger.info("tnb_email_input not found by name. attempting relative xpath")
         try:
             tnb_email_input = driver.find_element(By.XPATH, "//*[@id=\"frm-login\"]/div[2]/div/div[2]/div/div[3]/input")
         except NoSuchElementException:
-            print('tnb_email_input not found by relative xpath. attempting full xpath')
+            logger.info('tnb_email_input not found by relative xpath. attempting full xpath')
             try:
                 tnb_email_input = driver.find_element(By.XPATH,
                                                       "/html/body/div[2]/section[1]/div[2]/div/div/div/form/div[2]/div/div[2]/div/div[3]/input")
             except NoSuchElementException:
-                print('tnb_email_input not found by full xpath. attempting css selector')
+                logger.info('tnb_email_input not found by full xpath. attempting css selector')
                 try:
                     tnb_email_input = driver.find_element(By.CSS_SELECTOR,
                                                           "#frm-login > div.container-fluid > div > div.col-sm-12.col-md-offset-7.col-md-5.col-lg-4 > div > div:nth-child(3) > input")
                 except NoSuchElementException:
-                    print('all efforts failed. try again tomorrow')
+                    logger.info('all efforts failed. try again tomorrow')
 
 
 
