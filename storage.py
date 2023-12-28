@@ -1,6 +1,7 @@
 from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
+from main_logging import logger
 
 load_dotenv()
 BUCKET_NAME = "bill-scraper"
@@ -14,7 +15,7 @@ bucket_name: str = "bill-scraper"
 
 def list_bucket_items():
     res = supabase.storage.from_(bucket_name).list()
-    print(f"Listing items in {bucket_name}:")
+    logger.info(f"Listing items in {bucket_name}:")
     for x in res:
         print(x)
 
@@ -32,7 +33,7 @@ def upload_to_bucket(folder, file):
         file=file,
         file_options={"content-type": f"image/{extension}"}
     )
-    print(f"Status of file upload: {res}")
+    logger.info(f"Status of file upload: {res}")
     # print("Skipping saving screenshot to supabase")
 
 # upload_to_bucket("screenshots/air/air-20230703-225055.png")

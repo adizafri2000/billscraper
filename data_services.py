@@ -45,6 +45,13 @@ def get_installment_details(is_active=True):
     )
 
 
+def deactivate_installment(id: int):
+    """Deactivates an installment by setting its is_active status to False"""
+    conn.save(
+        f"update {schema}.installment set is_active = FALSE where id = {id}"
+    )
+
+
 def get_total_utilities():
     """Counts the total utilities."""
     return conn.count(

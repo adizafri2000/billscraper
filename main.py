@@ -115,14 +115,14 @@ def main():
 
     # Do something with the arguments
     if args["send_message"]:
-        print("Execution will send message to WhatsApp group...")
+        logger.info("Execution will send message to WhatsApp group...")
     else:
-        print("Skipping WhatsApp message...")
+        logger.info("Skipping WhatsApp message...")
 
-    print("Using database schema:", args["database_schema"])
+    logger.info(f"Using database schema: {args['database_schema']}")
     data_services.schema = args["database_schema"]
 
-    print(f"At main.main, cwd: {os.getcwd()}")
+    # print(f"At main.main, cwd: {os.getcwd()}")
 
     # chromedriver setup
     driver = get_chromedriver_by_service(headless=True)
@@ -159,7 +159,7 @@ def main():
 
     # send whatsapp message via REST API if argument received
     if args["send_message"]:
-        print(whatsapp.send_whatsapp_message(message.format_api_msg()))
+        logger.info(f"Sending formatted message to API: {whatsapp.send_whatsapp_message(message.format_api_msg())}")
 
     clean_resources(driver)
     logger.info("Program finished!")
