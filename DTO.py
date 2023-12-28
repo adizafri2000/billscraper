@@ -73,12 +73,16 @@ class WhatsappMessageDTO:
             normal_msg += i
             normal_msg += br
         normal_msg += br
-        normal_msg += self.msg["installments_section_header"]
-        normal_msg += br
-        for i in self.msg["installments_msg_list"]:
-            normal_msg += i
+
+        # only add the installments section if there are active installments for that month
+        if len(self.installments) > 0:
+            normal_msg += self.msg["installments_section_header"]
             normal_msg += br
-        normal_msg += br
+            for i in self.msg["installments_msg_list"]:
+                normal_msg += i
+                normal_msg += br
+            normal_msg += br
+
         normal_msg += self.msg["closing"]
         return normal_msg
 
