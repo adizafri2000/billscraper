@@ -67,6 +67,8 @@ def get_utility_details():
         - resident_id : int
         - created_at : datetime.datetime
         - updated_at : datetime.datetime
+        - price : decimal
+        - is_previous_month_charge : boolean
     """
     return conn.fetch_all(
         f"select * from {schema}.utility"
@@ -177,3 +179,4 @@ def calculate_new_statement(data: {}) -> StatementDTO:
 
 def close_connection():
     conn.close_connection()
+

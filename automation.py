@@ -267,29 +267,29 @@ def automate_air(driver: webdriver.Chrome) -> {}:
     )
 
 
-def generate_internet_bill():
-    logger.info("Using generator method to generate internet bill and skip web scraping")
-    datetoday = datetime.today().strftime("%d-%b-%Y")
-    _, month, year = datetoday.split('-')
-    datetoday = f"10-{month}-{year}"
-    return AutomationDTO(
-        type="Unifi",
-        id="3",
-        to_pay="168.55",
-        retrieved_date=datetime.now().strftime("%Y%m%d-%H%M%S"),
-        bill_date=datetoday
-    )
-
-
-def generate_house_rent_bill():
-    logger.info("Using generator method to generate house rental bill")
-    datetoday = datetime.today().strftime("%d-%b-%Y")
-    _, month, year = datetoday.split('-')
-    datetoday = f"10-{month}-{year}"
-    return AutomationDTO(
-        type="Sewa",
-        id="4",
-        to_pay="1000",
-        retrieved_date=datetime.now().strftime("%Y%m%d-%H%M%S"),
-        bill_date=datetoday
-    )
+# def generate_internet_bill():
+#     logger.info("Using generator method to generate internet bill and skip web scraping")
+#     datetoday = datetime.today().strftime("%d-%b-%Y")
+#     _, month, year = datetoday.split('-')
+#     datetoday = f"10-{month}-{year}"
+#     return AutomationDTO(
+#         type="Unifi",
+#         id="3",
+#         to_pay="168.55",
+#         retrieved_date=datetime.now().strftime("%Y%m%d-%H%M%S"),
+#         bill_date=datetoday
+#     )
+#
+#
+# def generate_house_rent_bill():
+#     logger.info("Using generator method to generate house rental bill")
+#     datetoday = datetime.today().strftime("%d-%b-%Y")
+#     _, month, year = datetoday.split('-')
+#     datetoday = f"10-{month}-{year}"
+#     return AutomationDTO(
+#         type="Sewa",
+#         id="4",
+#         to_pay="1000",
+#         retrieved_date=datetime.now().strftime("%Y%m%d-%H%M%S"),
+#         bill_date=datetoday
+#     )
