@@ -7,6 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 
 import automation
+import fixed_price_utility
 import installments as ccp
 import data_services
 import whatsapp
@@ -133,8 +134,11 @@ def main():
     # execute automation for utilities
     utilities.append(automation.automate_tnb(driver))
     utilities.append(automation.automate_air(driver))
-    utilities.append(automation.generate_internet_bill())
-    utilities.append(automation.generate_house_rent_bill())
+    # utilities.append(automation.generate_internet_bill())
+    # utilities.append(automation.generate_house_rent_bill())
+
+    # retrieve fixed-price monthly utilities
+    utilities.extend(fixed_price_utility.calculate_fixed_utilities())
 
     # retrieve monthly payment data for active installments
     installments.extend(ccp.calculate_installments())
