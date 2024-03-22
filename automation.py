@@ -5,6 +5,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.common import NoSuchElementException
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -70,22 +71,22 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
     try:
         # tnb_email_input = driver.find_element(By.NAME, "email")
         # print(f'tnb_email_input displayed: {tnb_email_input.is_displayed()}')
-        merdeka_popup = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div/div[2]/button")
-        logger.info(f'merdeka_popup displayed: {merdeka_popup.is_displayed()}')
-        merdeka_popup.click()
+        popup = driver.find_element(By.XPATH, "//*[@id=\"content\"]/div/div[1]/div/div/div[2]/button")
+        logger.info(f'popup displayed: {popup.is_displayed()}')
+        popup.click()
     except:
         # merdeka popup
         # merdeka_popup = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div/div[2]/button")
         # print(f'merdeka_popup displayed: {merdeka_popup.is_displayed()}')
         # merdeka_popup.click()
-        logger.info("merdeka popup not found...")
+        logger.info("popup not found...")
     finally:
         # take screenshot before inputting to login fields
         logger.info("Generating screenshot before inputting to login inputs at login page")
         generate_screenshot(driver, BILL_TNB)
 
     try:
-        tnb_email_input = driver.find_element(By.NAME, "email")
+        tnb_email_input = driver.find_element(By.NAME, "Email")
     except NoSuchElementException:
         logger.info("tnb_email_input not found by name. attempting relative xpath")
         try:
@@ -103,19 +104,17 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
                 except NoSuchElementException:
                     logger.info('all efforts failed. try again tomorrow')
 
-
-
-    tnb_password_input = driver.find_element(By.NAME, "password")
-    tnb_login_button = driver.find_element(By.XPATH,
-                                           "//*[@id=\"frm-login\"]/div[2]/div/div[2]/div/div[5]/div[2]/button")
-
+    tnb_password_input = driver.find_element(By.NAME, "Password")
+    # tnb_login_button = driver.find_element(By.XPATH,"//*[@id=\"frm-login\"]/div[2]/div/div[2]/div/div[5]/div[2]/button")
 
     tnb_email = os.getenv("TNB_EMAIL")
     tnb_password = os.getenv("TNB_PASSWORD")
 
     tnb_email_input.send_keys(tnb_email)
     tnb_password_input.send_keys(tnb_password)
-    tnb_login_button.click()
+    # tnb_login_button.click()
+    # clicking login button replaced with sending enter key to password input
+    tnb_password_input.send_keys(Keys.ENTER)
 
     time = 0
     while driver.current_url != TNB_DASHBOARD_URL or time < 15:
@@ -253,7 +252,7 @@ def automate_air(driver: webdriver.Chrome) -> {}:
     logger.info("Generating screenshot at billing & payment page arrival & before scraping")
     generate_screenshot(driver, BILL_AIR)
 
-    to_pay = driver.find_element(By.XPATH, "//*[@id=\"printBill\"]/tbody/tr[1]/td[5]").text
+    to_pay = driver.find_element(By.XPATH, "//*[@id=\"printBill\"]/tbody/tr[1]/td[4]").text
     bill_date = driver.find_element(By.XPATH, "//*[@id=\"printBill\"]/tbody/tr[1]/td[3]").text
 
     logger.info(f"Air Selangor Bill Scraped Data:\nBill Date: {bill_date}\nTo pay: RM{to_pay}")
@@ -265,7 +264,6 @@ def automate_air(driver: webdriver.Chrome) -> {}:
         retrieved_date=datetime.now().strftime("%Y%m%d-%H%M%S"),
         bill_date=bill_date
     )
-
 
 # def generate_internet_bill():
 #     logger.info("Using generator method to generate internet bill and skip web scraping")
