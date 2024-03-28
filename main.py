@@ -14,6 +14,7 @@ import whatsapp
 from DTO import WhatsappMessageDTO
 from data_services import calculate_new_statement, insert_statement, insert_monthly_utility, insert_monthly_installment
 from main_logging import logger
+from fake_useragent import UserAgent
 
 load_dotenv()
 utilities = []
@@ -68,6 +69,8 @@ def get_chromedriver_by_service(headless=False):
     user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
     # option.add_argument(
     # 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36')
+    ua = UserAgent()
+    user_agent = ua.chrome
     option.add_argument(f"user-agent={user_agent}")
 
     # https://stackoverflow.com/questions/66989755/getting-403-when-using-selenium-to-automate-checkout-process
