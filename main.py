@@ -138,6 +138,7 @@ def main():
 
     # chromedriver setup
     driver = get_chromedriver_by_service(headless=True)
+    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
     driver.set_window_size(1920, 1080)
     driver.implicitly_wait(5)
     logger.info(f"Driver window size: {driver.get_window_size()}")
