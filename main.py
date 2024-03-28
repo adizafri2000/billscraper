@@ -66,8 +66,8 @@ def get_chromedriver_by_service(headless=False):
     option.add_argument("--window-size=1920x1080")
     # add user agent option to bypass cloudflare
     user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
-    #option.add_argument(
-        #'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36')
+    # option.add_argument(
+    # 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36')
     option.add_argument(f"user-agent={user_agent}")
 
     # https://stackoverflow.com/questions/66989755/getting-403-when-using-selenium-to-automate-checkout-process
@@ -140,9 +140,11 @@ def main():
     logger.info(f"Driver window size: {driver.get_window_size()}")
 
     # execute automation for utilities
-    utilities.append(automation.automate_air(driver))
+    logger.info(f"Using User Agent: {driver.execute_script('return navigator.userAgent')}")
     utilities.append(automation.automate_tnb(driver))
-
+    logger.info(f"Using User Agent: {driver.execute_script('return navigator.userAgent')}")
+    utilities.append(automation.automate_air(driver))
+    logger.info(f"Using User Agent: {driver.execute_script('return navigator.userAgent')}")
 
     # retrieve fixed-price monthly utilities
     utilities.extend(fixed_price_utility.calculate_fixed_utilities())
