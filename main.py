@@ -70,6 +70,12 @@ def get_chromedriver_by_service(headless=False):
         #'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36')
     option.add_argument(f"user-agent={user_agent}")
 
+    # https://stackoverflow.com/questions/66989755/getting-403-when-using-selenium-to-automate-checkout-process
+    option.add_argument('--disable-blink-features=AutomationControlled')
+    option.add_argument("--disable-extensions")
+    option.add_experimental_option('useAutomationExtension', False)
+    option.add_experimental_option("excludeSwitches", ["enable-automation"])
+
     return webdriver.Chrome(
         # service=Service(ChromeDriverManager().install()),
         service=Service(),
@@ -134,8 +140,9 @@ def main():
     logger.info(f"Driver window size: {driver.get_window_size()}")
 
     # execute automation for utilities
-    utilities.append(automation.automate_tnb(driver))
     utilities.append(automation.automate_air(driver))
+    utilities.append(automation.automate_tnb(driver))
+
 
     # retrieve fixed-price monthly utilities
     utilities.extend(fixed_price_utility.calculate_fixed_utilities())
