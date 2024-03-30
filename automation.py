@@ -14,6 +14,7 @@ import utilities
 from DTO import AutomationDTO
 from main_logging import logger
 import storage
+import requests
 
 load_dotenv()
 TNB_URL = "https://www.mytnb.com.my/"
@@ -80,8 +81,20 @@ def handle_scraping_error(driver, bill_type):
     exit(1)
 
 
+def check_forbidden_status(url):
+    try:
+        response = requests.get(url)
+        if response.status_code == 403:
+            logger.info(f"{url} returned a **403 Forbidden** status.")
+        else:
+            logger.info(f"{url} did not return a 403 status.")
+    except requests.RequestException as e:
+        logger.error(f"Error: {e}")
+
+
 def automate_tnb(driver: webdriver.Chrome) -> {}:
     try:
+        check_forbidden_status(TNB_URL)
         wait = WebDriverWait(driver, 20)
         driver.get(TNB_URL)
         logger.info(f"Current browser URL: {driver.current_url}")
