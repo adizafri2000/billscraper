@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 
+import socket
 import automation
 import fixed_price_utility
 import installments as ccp
@@ -85,6 +86,21 @@ def get_chromedriver_by_service(headless=False):
         options=option
     )
 
+def get_public_ip():
+    try:
+        # Use a public DNS server to get the public IP address
+        public_ip = socket.gethostbyname("myip.opendns.com")
+        return public_ip
+    except socket.error:
+        return "Unable to determine public IP"
+
+def get_private_ip():
+    try:
+        # Get the local hostname and resolve it to get the private IP address
+        private_ip = socket.gethostbyname(socket.gethostname())
+        return private_ip
+    except socket.error:
+        return "Unable to determine private IP"
 
 def parse_arguments():
     """
@@ -135,6 +151,8 @@ def main():
     data_services.schema = args["database_schema"]
 
     # print(f"At main.main, cwd: {os.getcwd()}")
+    logger.info(f"Public IP: {get_public_ip()}")
+    logger.info(f"Private IP: {get_private_ip()}")
 
     # chromedriver setup
     driver = get_chromedriver_by_service(headless=True)
