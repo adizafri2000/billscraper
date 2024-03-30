@@ -104,11 +104,11 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
         generate_screenshot(driver, BILL_TNB)
 
         try:
-            time.sleep(5)
+            # time.sleep(5)
             popup = driver.find_element(By.XPATH, "//*[@id=\"content\"]/div/div[1]/div/div/div[2]/button")
             logger.info(f'popup displayed: {popup.is_displayed()}')
             popup.click()
-            time.sleep(5)
+            # time.sleep(5)
         except:
             logger.info("popup not found...")
         finally:
@@ -117,13 +117,13 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
             generate_screenshot(driver, BILL_TNB)
 
         tnb_email_input = driver.find_element(By.NAME, "Email")
-        time.sleep(5)
+        # time.sleep(5)
         tnb_password_input = driver.find_element(By.NAME, "Password")
         # tnb_login_button = driver.find_element(By.XPATH,"//*[@id=\"frm-login\"]/div[2]/div/div[2]/div/div[5]/div[2]/button")
 
         tnb_email = os.getenv("TNB_EMAIL")
         tnb_password = os.getenv("TNB_PASSWORD")
-        time.sleep(5)
+        # time.sleep(5)
 
         tnb_email_input.send_keys(tnb_email)
         tnb_password_input.send_keys(tnb_password)
