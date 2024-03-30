@@ -81,7 +81,7 @@ def handle_scraping_error(driver, bill_type):
     exit(1)
 
 
-def check_forbidden_status(url, bill_type):
+def check_forbidden_status(url, driver, bill_type):
     try:
         response = requests.get(url)
         logger.info(f"{url} return status code: {response.status_code}")
@@ -94,7 +94,7 @@ def check_forbidden_status(url, bill_type):
 
 def automate_tnb(driver: webdriver.Chrome) -> {}:
     try:
-        check_forbidden_status(TNB_URL, BILL_TNB)
+        check_forbidden_status(TNB_URL, driver, BILL_TNB)
         wait = WebDriverWait(driver, 20)
         driver.get(TNB_URL)
         logger.info(f"Current browser URL: {driver.current_url}")
@@ -219,7 +219,7 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
 
 def automate_air(driver: webdriver.Chrome) -> {}:
     try:
-        check_forbidden_status(AIR_URL, BILL_AIR)
+        check_forbidden_status(AIR_URL, driver, BILL_AIR)
         driver.get(AIR_URL)
         logger.info(f"Current browser URL: {driver.current_url}")
 
