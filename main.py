@@ -62,22 +62,22 @@ def get_chromedriver_by_service(headless=False):
     else:
         logger.info("Running chromedriver in normal GUI mode")
 
-    option.add_argument('--disable-gpu')
-    option.add_argument('--no-sandbox')
-    option.add_argument("--window-size=1920x1080")
-    # add user agent option to bypass cloudflare
-    user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
-    # option.add_argument(
-    # 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36')
-    ua = UserAgent()
-    user_agent = ua.chrome
-    option.add_argument(f"user-agent={user_agent}")
+    # option.add_argument('--disable-gpu')
+    # option.add_argument('--no-sandbox')
+    # option.add_argument("--window-size=1920x1080")
+    # # add user agent option to bypass cloudflare
+    # user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
+    # # option.add_argument(
+    # # 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36')
+    # ua = UserAgent()
+    # user_agent = ua.chrome
+    # option.add_argument(f"user-agent={user_agent}")
 
-    # https://stackoverflow.com/questions/66989755/getting-403-when-using-selenium-to-automate-checkout-process
-    option.add_argument('--disable-blink-features=AutomationControlled')
-    option.add_argument("--disable-extensions")
-    option.add_experimental_option('useAutomationExtension', False)
-    option.add_experimental_option("excludeSwitches", ["enable-automation"])
+    # # https://stackoverflow.com/questions/66989755/getting-403-when-using-selenium-to-automate-checkout-process
+    # option.add_argument('--disable-blink-features=AutomationControlled')
+    # option.add_argument("--disable-extensions")
+    # option.add_experimental_option('useAutomationExtension', False)
+    # option.add_experimental_option("excludeSwitches", ["enable-automation"])
 
     return webdriver.Chrome(
         # service=Service(ChromeDriverManager().install()),
