@@ -145,10 +145,9 @@ def main():
 
     # execute automation for utilities
     logger.info(f"Using User Agent: {driver.execute_script('return navigator.userAgent')}")
-    utilities.append(automation.automate_air(driver))
-    logger.info(f"Using User Agent: {driver.execute_script('return navigator.userAgent')}")
     utilities.append(automation.automate_tnb(driver))
-    
+    logger.info(f"Using User Agent: {driver.execute_script('return navigator.userAgent')}")
+    utilities.append(automation.automate_air(driver))
     logger.info(f"Using User Agent: {driver.execute_script('return navigator.userAgent')}")
 
     # retrieve fixed-price monthly utilities
