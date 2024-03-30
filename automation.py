@@ -219,6 +219,7 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
 
 def automate_air(driver: webdriver.Chrome) -> {}:
     try:
+        check_forbidden_status(AIR_URL)
         driver.get(AIR_URL)
         logger.info(f"Current browser URL: {driver.current_url}")
 
