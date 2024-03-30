@@ -2,6 +2,7 @@ import argparse
 import os
 import platform
 
+
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
