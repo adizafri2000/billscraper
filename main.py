@@ -79,6 +79,7 @@ def get_chromedriver_by_service(headless=False):
     option.add_argument("--disable-extensions")
     option.add_experimental_option('useAutomationExtension', False)
     option.add_experimental_option("excludeSwitches", ["enable-automation"])
+    option.add_experimental_option("prefs", {"profile.block_third_party_cookies": True})
 
     return webdriver.Chrome(
         # service=Service(ChromeDriverManager().install()),
