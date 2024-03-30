@@ -81,20 +81,20 @@ def handle_scraping_error(driver, bill_type):
     exit(1)
 
 
-def check_forbidden_status(url):
+def check_forbidden_status(url, bill_type):
     try:
         response = requests.get(url)
+        logger.info(f"{url} return status code: {response.status_code}")
         if response.status_code == 403:
-            logger.info(f"{url} returned a **403 Forbidden** status.")
-        else:
-            logger.info(f"{url} did not return a 403 status.")
+            logger.error(f"Error: 403 Forbidden on {url}, beginning program termination")
+            handle_scraping_error(driver, bill_type)
     except requests.RequestException as e:
         logger.error(f"Error: {e}")
 
 
 def automate_tnb(driver: webdriver.Chrome) -> {}:
     try:
-        check_forbidden_status(TNB_URL)
+        check_forbidden_status(TNB_URL, BILL_TNB)
         wait = WebDriverWait(driver, 20)
         driver.get(TNB_URL)
         logger.info(f"Current browser URL: {driver.current_url}")
@@ -219,7 +219,7 @@ def automate_tnb(driver: webdriver.Chrome) -> {}:
 
 def automate_air(driver: webdriver.Chrome) -> {}:
     try:
-        check_forbidden_status(AIR_URL)
+        check_forbidden_status(AIR_URL, BILL_AIR)
         driver.get(AIR_URL)
         logger.info(f"Current browser URL: {driver.current_url}")
 
