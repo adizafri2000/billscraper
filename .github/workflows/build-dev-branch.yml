@@ -71,10 +71,13 @@ jobs:
         run: pip install -r requirements.txt
         shell: sh
 
-      - name: Show IP addresses
-        run: echo "Public IP: $(curl -s ifconfig.me)" && echo "Private IP: $(hostname -I)"
+      - name: Show Public IP address
+        run: curl -s ifconfig.me
         shell: sh
 
+      - name: Show Private IP address
+        run: hostname -I
+        shell: sh
 
       - name: Run app
         run: python3 main.py -db sqa
