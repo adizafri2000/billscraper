@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 
+import time
 import socket
 import automation
 import fixed_price_utility
@@ -68,11 +69,12 @@ def get_chromedriver_by_service(headless=False):
     option.add_argument("--window-size=1920x1080")
     # add user agent option to bypass cloudflare
     user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
+    user_agent2 = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
     # option.add_argument(
     # 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36')
     ua = UserAgent()
     user_agent = ua.chrome
-    option.add_argument(f"user-agent={user_agent}")
+    option.add_argument(f"user-agent={user_agent2}")
 
     # https://stackoverflow.com/questions/66989755/getting-403-when-using-selenium-to-automate-checkout-process
     option.add_argument('--disable-blink-features=AutomationControlled')
