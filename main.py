@@ -4,7 +4,8 @@ import platform
 
 from dotenv import load_dotenv
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 import automation
 import fixed_price_utility
@@ -20,7 +21,7 @@ utilities = []
 installments = []
 
 
-def clean_resources(driver: webdriver.Chrome, conn=None):
+def clean_resources(driver: webdriver.Firefox, conn=None):
     driver.close()
     driver.quit()
     logger.info("Closed and quit webdriver connection!")
@@ -28,57 +29,29 @@ def clean_resources(driver: webdriver.Chrome, conn=None):
     logger.info("Closed and quit database connection!")
 
 
-@DeprecationWarning
-def get_chromedriver(headless=False):
-    """Returns a chromedriver executable based on detected machine OS"""
-    driver_dir = "chromedriver" + os.sep
-    if platform.system().lower() != "windows":
-        driver_dir += "LINUX_64_chromedriver"
-        driver_dir = "./" + driver_dir
-    else:
-        driver_dir += "WIN_32_chromedriver.exe"
-    logger.info("Using chromedriver from {}".format(driver_dir))
+def get_geckodriver(headless=False):
+    """Returns a geckodriver executable based on detected machine OS"""
+    logger.info("Using geckodriver for Firefox")
 
-    option = webdriver.ChromeOptions()
+    options = FirefoxOptions()
     if headless:
-        logger.info("Running chromedriver in headless mode")
-        option.add_argument("--headless=new")
+        logger.info("Running geckodriver in headless mode")
+        options.add_argument("--headless")
     else:
-        logger.info("Running chromedriver in normal GUI mode")
+        logger.info("Running geckodriver in normal GUI mode")
 
-    option.add_argument('--disable-gpu')
-    option.add_argument('--no-sandbox')
-    option.add_argument("--window-size=1920x1080")
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
+    options.add_argument("--window-size=1920x1080")
 
-    return webdriver.Chrome(driver_dir, options=option)
-
-
-def get_chromedriver_by_service(headless=False):
-    option = webdriver.ChromeOptions()
-    if headless:
-        logger.info("Running chromedriver in headless mode")
-        option.add_argument("--headless=new")
-    else:
-        logger.info("Running chromedriver in normal GUI mode")
-
-    option.add_argument('--disable-gpu')
-    option.add_argument('--no-sandbox')
-    option.add_argument("--window-size=1920x1080")
-    # add user agent option to bypass cloudflare
-    option.add_argument(
-        'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36')
-
-    return webdriver.Chrome(
-        # service=Service(ChromeDriverManager().install()),
-        service=Service(),
-        options=option
-    )
+    service = FirefoxService()
+    return webdriver.Firefox(service=service, options=options)
 
 
 def parse_arguments():
     """
-  This function parses the command line arguments and returns a dictionary of the arguments. Generated via Bard
-  """
+    This function parses the command line arguments and returns a dictionary of the arguments. Generated via Bard
+    """
 
     # Create the parser
     parser = argparse.ArgumentParser()
@@ -125,8 +98,8 @@ def main():
 
     # print(f"At main.main, cwd: {os.getcwd()}")
 
-    # chromedriver setup
-    driver = get_chromedriver_by_service(headless=True)
+    # geckodriver setup
+    driver = get_geckodriver(headless=True)
     driver.set_window_size(1920, 1080)
     driver.implicitly_wait(5)
     logger.info(f"Driver window size: {driver.get_window_size()}")
