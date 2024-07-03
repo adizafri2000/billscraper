@@ -2,27 +2,18 @@
 
 sudo apt update -y && sudo apt upgrade -y
 
-echo "(1/9) Installing Google Chrome..."
-sudo curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add 
-sudo bash -c "echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' >> /etc/apt/sources.list.d/google-chrome.list" 
-sudo apt -y install google-chrome-stable
+echo "(1/7) Installing Firefox..."
+sudo apt install -y firefox
 
-#echo "(2/9) Installing chromedriver v114.0.5735.16 ..."
-#wget https://chromedriver.storage.googleapis.com/114.0.5735.16/chromedriver_linux64.zip
-#unzip chromedriver_linux64.zip
-#mv chromedriver chromedriver/chromedriver_linux64_114-0-5735-16
-#sudo chown root:root chromedriver
-#sudo chmod +x chromedriver
+echo "(2/7) Installing GeckoDriver..."
+GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep 'tag_name' | cut -d\" -f4)
+wget "https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz"
+tar -xzf geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz
+sudo mv geckodriver /usr/local/bin/
+rm geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz
 
-#echo "(3/9) Installing Java for Selenium Server ..."
-#sudo apt install default-jdk
-#
-#echo "(4/9) Downloading Selenium Server v3.141.59 ..."
-#wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
-#mv selenium-server-standalone-3.141.59.jar chromedriver/selenium-server-standalone.jar
-
-echo "(5/9) Allow xhost (or something like that) and creating .Xauthority file ..."
-sudo apt install x11-xserver-utils
+echo "(3/7) Allow xhost (or something like that) and creating .Xauthority file ..."
+sudo apt install -y x11-xserver-utils
 
 touch ~/.Xauthority
 sudo chmod 777 /etc/pam.d/su /etc/pam.d/sudo
@@ -32,27 +23,20 @@ tail -n 1 /etc/pam.d/su
 echo "session optional pam_xauth.so" >> /etc/pam.d/sudo
 tail -n 1 /etc/pam.d/sudo
 
-#echo "session optional pam_xauth.so" | sudo tee -a /etc/pam.d/su
-#echo "session optional pam_xauth.so" | sudo tee -a /etc/pam.d/sudo
-#X=$(xauth list $DISPLAY)
-#sudo -- bash -c "xauth add $X && $@"
-#sudo xauth add $X
 xhost -f ~/.Xauthority +si:localuser:$USER
 
-echo "(6/9) Installing Tkinter ..."
-sudo apt-get install python3-tk python3-dev
+echo "(4/7) Installing Tkinter ..."
+sudo apt-get install -y python3-tk python3-dev
 
-echo "(7/9) Installing virtualenv for python and initialising a venv ..."
+echo "(5/7) Installing virtualenv for python and initializing a venv ..."
 python3 -m pip install virtualenv
 virtualenv venv
 
-echo "(8/9) Activating venv and installing from requirements.txt ..."
+echo "(6/7) Activating venv and installing from requirements.txt ..."
 . venv/bin/activate
 python3 -m pip install -r requirements.txt
 
-echo "(9/9) Deactivating venv ..."
+echo "(7/7) Deactivating venv ..."
 deactivate
 
 echo "Setup completed! To run the automation, execute './runner.sh'"
-
-
