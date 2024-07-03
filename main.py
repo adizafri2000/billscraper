@@ -5,7 +5,8 @@ import platform
 
 from dotenv import load_dotenv
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 import time
 import socket
@@ -24,7 +25,7 @@ utilities = []
 installments = []
 
 
-def clean_resources(driver: webdriver.Chrome, conn=None):
+def clean_resources(driver: webdriver.Firefox, conn=None):
     driver.close()
     driver.quit()
     logger.info("Closed and quit webdriver connection!")
@@ -32,63 +33,44 @@ def clean_resources(driver: webdriver.Chrome, conn=None):
     logger.info("Closed and quit database connection!")
 
 
-@DeprecationWarning
-def get_chromedriver(headless=False):
-    """Returns a chromedriver executable based on detected machine OS"""
-    driver_dir = "chromedriver" + os.sep
-    if platform.system().lower() != "windows":
-        driver_dir += "LINUX_64_chromedriver"
-        driver_dir = "./" + driver_dir
-    else:
-        driver_dir += "WIN_32_chromedriver.exe"
-    logger.info("Using chromedriver from {}".format(driver_dir))
+def get_geckodriver(headless=False):
+    """Returns a geckodriver executable based on detected machine OS"""
+    logger.info("Using geckodriver for Firefox")
 
-    option = webdriver.ChromeOptions()
+    options = FirefoxOptions()
     if headless:
-        logger.info("Running chromedriver in headless mode")
-        option.add_argument("--headless=new")
+        logger.info("Running geckodriver in headless mode")
+        options.add_argument("--headless")
     else:
-        logger.info("Running chromedriver in normal GUI mode")
-
-    option.add_argument('--disable-gpu')
-    option.add_argument('--no-sandbox')
-    option.add_argument("--window-size=1920x1080")
-
-    return webdriver.Chrome(driver_dir, options=option)
+        logger.info("Running geckodriver in normal GUI mode")
 
 
-def get_chromedriver_by_service(headless=False):
-    option = webdriver.ChromeOptions()
-    if headless:
-        logger.info("Running chromedriver in headless mode")
-        option.add_argument("--headless=new")
-    else:
-        logger.info("Running chromedriver in normal GUI mode")
-
-    option.add_argument('--disable-gpu')
-    option.add_argument('--no-sandbox')
-    option.add_argument("--window-size=1920x1080")
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
+    options.add_argument("--window-size=1920x1080")
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+    
+    # option.add_argument('--disable-gpu')
+    # option.add_argument('--no-sandbox')
+    # option.add_argument("--window-size=1920x1080")
     # add user agent option to bypass cloudflare
-    user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
-    user_agent2 = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+    # user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
+    # user_agent2 = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
     # option.add_argument(
     # 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36')
-    ua = UserAgent()
-    user_agent = ua.chrome
-    option.add_argument(f"user-agent={user_agent2}")
+    # ua = UserAgent()
+    # user_agent = ua.chrome
+    # option.add_argument(f"user-agent={user_agent2}")
 
     # https://stackoverflow.com/questions/66989755/getting-403-when-using-selenium-to-automate-checkout-process
-    option.add_argument('--disable-blink-features=AutomationControlled')
-    option.add_argument("--disable-extensions")
-    option.add_experimental_option('useAutomationExtension', False)
-    option.add_experimental_option("excludeSwitches", ["enable-automation"])
-    option.add_experimental_option("prefs", {"profile.block_third_party_cookies": True})
+    # option.add_argument('--disable-blink-features=AutomationControlled')
+    # option.add_argument("--disable-extensions")
+    # option.add_experimental_option('useAutomationExtension', False)
+    # option.add_experimental_option("excludeSwitches", ["enable-automation"])
+    # option.add_experimental_option("prefs", {"profile.block_third_party_cookies": True})
 
-    return webdriver.Chrome(
-        # service=Service(ChromeDriverManager().install()),
-        service=Service(),
-        options=option
-    )
+    service = FirefoxService()
+    return webdriver.Firefox(service=service, options=options)
 
 def get_public_ip():
     try:
@@ -108,8 +90,8 @@ def get_private_ip():
 
 def parse_arguments():
     """
-  This function parses the command line arguments and returns a dictionary of the arguments. Generated via Bard
-  """
+    This function parses the command line arguments and returns a dictionary of the arguments. Generated via Bard
+    """
 
     # Create the parser
     parser = argparse.ArgumentParser()
@@ -158,9 +140,14 @@ def main():
     logger.info(f"Public IP: {get_public_ip()}")
     logger.info(f"Private IP: {get_private_ip()}")
 
+
+    # geckodriver setup
+    driver = get_geckodriver(headless=True)
+
     # chromedriver setup
-    driver = get_chromedriver_by_service(headless=True)
-    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+    # driver = get_chromedriver_by_service(headless=True)
+    # driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+
     driver.set_window_size(1920, 1080)
     driver.implicitly_wait(5)
     logger.info(f"Driver window size: {driver.get_window_size()}")
