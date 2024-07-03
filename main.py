@@ -2,11 +2,14 @@ import argparse
 import os
 import platform
 
+
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
+import time
+import socket
 import automation
 import fixed_price_utility
 import installments as ccp
@@ -15,6 +18,7 @@ import whatsapp
 from DTO import WhatsappMessageDTO
 from data_services import calculate_new_statement, insert_statement, insert_monthly_utility, insert_monthly_installment
 from main_logging import logger
+from fake_useragent import UserAgent
 
 load_dotenv()
 utilities = []
@@ -40,13 +44,48 @@ def get_geckodriver(headless=False):
     else:
         logger.info("Running geckodriver in normal GUI mode")
 
+
     options.add_argument('--disable-gpu')
     options.add_argument('--no-sandbox')
     options.add_argument("--window-size=1920x1080")
+    
+    # option.add_argument('--disable-gpu')
+    # option.add_argument('--no-sandbox')
+    # option.add_argument("--window-size=1920x1080")
+    # add user agent option to bypass cloudflare
+    # user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
+    # user_agent2 = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+    # option.add_argument(
+    # 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36')
+    # ua = UserAgent()
+    # user_agent = ua.chrome
+    # option.add_argument(f"user-agent={user_agent2}")
+
+    # https://stackoverflow.com/questions/66989755/getting-403-when-using-selenium-to-automate-checkout-process
+    # option.add_argument('--disable-blink-features=AutomationControlled')
+    # option.add_argument("--disable-extensions")
+    # option.add_experimental_option('useAutomationExtension', False)
+    # option.add_experimental_option("excludeSwitches", ["enable-automation"])
+    # option.add_experimental_option("prefs", {"profile.block_third_party_cookies": True})
 
     service = FirefoxService()
     return webdriver.Firefox(service=service, options=options)
 
+def get_public_ip():
+    try:
+        # Use a public DNS server to get the public IP address
+        public_ip = socket.gethostbyname("myip.opendns.com")
+        return public_ip
+    except socket.error:
+        return "Unable to determine public IP"
+
+def get_private_ip():
+    try:
+        # Get the local hostname and resolve it to get the private IP address
+        private_ip = socket.gethostbyname(socket.gethostname())
+        return private_ip
+    except socket.error:
+        return "Unable to determine private IP"
 
 def parse_arguments():
     """
@@ -97,18 +136,27 @@ def main():
     data_services.schema = args["database_schema"]
 
     # print(f"At main.main, cwd: {os.getcwd()}")
+    logger.info(f"Public IP: {get_public_ip()}")
+    logger.info(f"Private IP: {get_private_ip()}")
+
 
     # geckodriver setup
     driver = get_geckodriver(headless=True)
+
+    # chromedriver setup
+    # driver = get_chromedriver_by_service(headless=True)
+    # driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+
     driver.set_window_size(1920, 1080)
     driver.implicitly_wait(5)
     logger.info(f"Driver window size: {driver.get_window_size()}")
 
     # execute automation for utilities
+    logger.info(f"Using User Agent: {driver.execute_script('return navigator.userAgent')}")
     utilities.append(automation.automate_tnb(driver))
+    logger.info(f"Using User Agent: {driver.execute_script('return navigator.userAgent')}")
     utilities.append(automation.automate_air(driver))
-    # utilities.append(automation.generate_internet_bill())
-    # utilities.append(automation.generate_house_rent_bill())
+    logger.info(f"Using User Agent: {driver.execute_script('return navigator.userAgent')}")
 
     # retrieve fixed-price monthly utilities
     utilities.extend(fixed_price_utility.calculate_fixed_utilities())
