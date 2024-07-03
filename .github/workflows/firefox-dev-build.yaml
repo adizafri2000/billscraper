@@ -1,11 +1,11 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Dev branch build & test
+name: Firefox-migration branch build & test
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "firefox-migration" ]
 
 permissions:
   contents: read
@@ -69,14 +69,6 @@ jobs:
 
       - name: Reinstall pip libraries
         run: pip install -r requirements.txt
-        shell: sh
-
-      - name: Show Public IP address
-        run: curl -s ifconfig.me
-        shell: sh
-
-      - name: Show Private IP address
-        run: hostname -I
         shell: sh
 
       - name: Run app

@@ -28,10 +28,15 @@ def upload_to_bucket(folder, file):
     """
     base_name = os.path.basename(file)
     extension = os.path.splitext(base_name)[1][1:]
+
+    # for png files, upload to the e.g. tnb/file_name.png
+    # for html files, upload to the e.g. html/tnb/file_name.html
+    path = f"{folder}/{base_name}" if extension == "png" else f"html/{folder}/{base_name}"
+    content_type = f"image/{extension}" if extension == "png" else f"text/{extension}"
     res = supabase.storage.from_(bucket_name).upload(
-        path=f"{folder}/{base_name}",
+        path=path,
         file=file,
-        file_options={"content-type": f"image/{extension}"}
+        file_options={"content-type": content_type}
     )
     logger.info(f"Status of file upload: {res}")
     # print("Skipping saving screenshot to supabase")
