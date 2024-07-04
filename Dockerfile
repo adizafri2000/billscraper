@@ -5,14 +5,30 @@ FROM alpine:latest
 RUN apk update && \
     apk add --no-cache git curl tar bash
 
-# Copy install-go.sh script to the container
-COPY install-go.sh /root/install-go.sh
+# Define Go version and download URL
+ENV GO_VERSION=1.21.1
+ENV GO_TARBALL=go${GO_VERSION}.linux-amd64.tar.gz
+ENV GO_URL=https://golang.org/dl/${GO_TARBALL}
 
-RUN cat /root/install-go.sh
-
-# Run the script to install Go
-RUN chmod +x /root/install-go.sh && \
-    ./root/install-go.sh
+# Install Go using the script directly in Dockerfile
+RUN echo "Updating the package list..." && \
+    apk update && \
+    echo "Installing required packages..." && \
+    apk add --no-cache curl tar bash && \
+    echo "Downloading Go ${GO_VERSION}..." && \
+    curl -O ${GO_URL} && \
+    echo "Extracting ${GO_TARBALL} to /usr/local..." && \
+    tar -C /usr/local -xzf ${GO_TARBALL} && \
+    echo "Setting up Go environment..." && \
+    echo "export PATH=\$(dirname \$(which go)):\$PATH" >> ~/.profile && \
+    echo "export GOPATH=\$HOME/go" >> ~/.profile && \
+    echo "export PATH=\$PATH:\$GOPATH/bin" >> ~/.profile && \
+    source ~/.profile && \
+    echo "Verifying Go installation..." && \
+    go version && \
+    echo "Cleaning up..." && \
+    rm ${GO_TARBALL} && \
+    echo "Go ${GO_VERSION} has been successfully installed."
 
 # Clone the repository
 RUN git clone https://github.com/tulir/whatsmeow /root/whatsmeow
