@@ -6,7 +6,11 @@ RUN apk update && apk add --no-cache \
     git \
     curl \
     tar \
-    bash
+    bash \
+    gcc \
+    musl-dev \
+    libc-dev \
+    make
 
 # Install Go
 ENV GO_VERSION=1.21.1
@@ -18,6 +22,7 @@ RUN curl -LO https://dl.google.com/go/go$GO_VERSION.linux-amd64.tar.gz && \
 ENV PATH="/usr/local/go/bin:${PATH}"
 ENV GOPATH="/go"
 ENV PATH="${GOPATH}/bin:${PATH}"
+ENV CGO_ENABLED=1  # Enable CGO
 
 # Clone the whatsmeow repository
 RUN git clone https://github.com/tulir/whatsmeow /go/src/whatsmeow
@@ -26,7 +31,7 @@ RUN git clone https://github.com/tulir/whatsmeow /go/src/whatsmeow
 WORKDIR /go/src/whatsmeow/mdtest
 
 # Build the project
-RUN /usr/local/go/bin/go build
+RUN go build -o mdtest
 
 # Run the built binary on container run
 CMD ["./mdtest"]
