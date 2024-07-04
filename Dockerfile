@@ -1,31 +1,25 @@
-# Use the latest Alpine image as the base
+# Use Alpine Linux as base image
 FROM alpine:latest
 
-# Install necessary dependencies
-RUN apk update && apk add --no-cache \
-    git \
-    curl \
-    tar \
-    bash \
-    gcc \
-    musl-dev \
-    libc-dev \
-    make \
-    go
+# Update package list and install required tools
+RUN apk update && \
+    apk add --no-cache git curl tar bash
 
-# Set Go environment variables
-ENV GOPATH="/go"
-ENV PATH="${GOPATH}/bin:/usr/local/go/bin:${PATH}"
-ENV CGO_ENABLED=1  # Enable CGO
+# Copy install-go.sh script to the container
+COPY install-go.sh /root/install-go.sh
 
-# Clone the whatsmeow repository
-RUN git clone https://github.com/tulir/whatsmeow /go/src/whatsmeow
+# Run the script to install Go
+RUN chmod +x /root/install-go.sh && \
+    /root/install-go.sh
 
-# Set the working directory to mdtest
-WORKDIR /go/src/whatsmeow/mdtest
+# Clone the repository
+RUN git clone https://github.com/tulir/whatsmeow /root/whatsmeow
 
-# Build the project
-RUN go build -o mdtest
+# Set working directory
+WORKDIR /root/whatsmeow/mdtest
 
-# Run the built binary on container run
-CMD ["./mdtest"]
+# Build the project using the installed Go
+RUN $(which go) build
+
+# Set entry point to run the built executable
+ENTRYPOINT ["./mdtest"]
