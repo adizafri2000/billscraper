@@ -10,7 +10,7 @@ COPY install-go.sh /root/install-go.sh
 
 # Run the script to install Go
 RUN chmod +x /root/install-go.sh && \
-    /root/install-go.sh
+    ./root/install-go.sh
 
 # Clone the repository
 RUN git clone https://github.com/tulir/whatsmeow /root/whatsmeow
