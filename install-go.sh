@@ -20,8 +20,11 @@ curl -O ${GO_URL}
 # Extract the tarball to /usr/local
 tar -C /usr/local -xzf ${GO_TARBALL}
 
+# Get the path to the 'go' executable
+GO_PATH=$(which go)
+
 # Set up Go environment variables
-echo "export PATH=\$(dirname \$(which go)):\$PATH" >> ~/.profile
+echo "export PATH=\$(dirname ${GO_PATH}):\$PATH" >> ~/.profile
 echo "export GOPATH=\$HOME/go" >> ~/.profile
 echo "export PATH=\$PATH:\$GOPATH/bin" >> ~/.profile
 
@@ -29,4 +32,4 @@ echo "export PATH=\$PATH:\$GOPATH/bin" >> ~/.profile
 source ~/.profile
 
 # Verify the installation
-go version
+${GO_PATH} version
