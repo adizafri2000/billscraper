@@ -10,18 +10,12 @@ RUN apk update && apk add --no-cache \
     gcc \
     musl-dev \
     libc-dev \
-    make
-
-# Install Go
-ENV GO_VERSION=1.21.1
-RUN curl -LO https://dl.google.com/go/go$GO_VERSION.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go$GO_VERSION.linux-amd64.tar.gz && \
-    rm go$GO_VERSION.linux-amd64.tar.gz
+    make \
+    go
 
 # Set Go environment variables
-ENV PATH="/usr/local/go/bin:${PATH}"
 ENV GOPATH="/go"
-ENV PATH="${GOPATH}/bin:${PATH}"
+ENV PATH="${GOPATH}/bin:/usr/local/go/bin:${PATH}"
 ENV CGO_ENABLED=1  # Enable CGO
 
 # Clone the whatsmeow repository
