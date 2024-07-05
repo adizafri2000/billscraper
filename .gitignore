@@ -10,3 +10,4 @@ chromedriver/LICENSE.chromedriver
 chromedriver/selenium-server-standalone.jar
 chromedriver/ork
 logs/
+whatsapp-service/post-test.sh
