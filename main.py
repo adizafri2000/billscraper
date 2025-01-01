@@ -190,6 +190,6 @@ def main():
     clean_resources(driver)
     logger.info("Program finished!")
 
-
+# main
 if __name__ == '__main__':
     main()
