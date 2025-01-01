@@ -13,8 +13,7 @@ ws_api_id = os.environ["ws_api_id"]
 def send_whatsapp_message(content: str):
     """Sends a message to the WhatsApp API"""
     params = {
-        "number": ws_api_id,
-        "content": content
+        "message": content
     }
     headers = {
         "accept": "application/json",
